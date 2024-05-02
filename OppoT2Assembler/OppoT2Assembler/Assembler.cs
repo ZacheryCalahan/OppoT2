@@ -29,8 +29,7 @@ namespace OppoT2Assembler {
             // Get each label
             uint currentAddr = 0;
             for (int i = 0; i < lines.Count; i++) {
-                lines[i].Trim(); // Remove extra whitespace for here and later
-
+                lines[i] = lines[i].Trim();
                 // Search for labels
 
                 if (lines[i][0] == '.') {
@@ -38,16 +37,33 @@ namespace OppoT2Assembler {
                     try {
                         labelAddresses.Add(label, currentAddr);
                         lines.RemoveAt(i);
+                        i--;
                     } catch (ArgumentException e) {
                         Console.WriteLine(e);
                         Console.WriteLine("Duplicate label found at line: " + i);
                     }
 
                 } else if (lines[i][0] == '@') {
-                    // Skip this for now, handle their addresses later.
+                    if (lines[i].StartsWith("@ascii")) {
+                        currentAddr += (uint) lines[i].Length - 7;
+                    }
                 } else {
-                    currentAddr++;
+                    // Special case of movi needs to be handled.
+                    if (lines[i].StartsWith("movi")) {
+                        currentAddr += 2;
+                    } else {
+                        currentAddr++;
+                    }
                 }
+            }
+
+            foreach (KeyValuePair<string, uint> label in labelAddresses) {
+                Console.WriteLine("Label: {0}, Address: {1}", label.Key, label.Value);
+            }
+
+            Console.WriteLine("Linted file: ");
+            foreach (string line in lines) {
+                Console.WriteLine(line);
             }
 
 
@@ -60,12 +76,46 @@ namespace OppoT2Assembler {
 
                 if (tokens[0][0] == '@') { // Check if line starts with '@' symbol
                     // Directive
-                    output += HandleDirectives(tokens, memLocation, out uint memOffset);
+                    output += HandleDirectives(lines[i], memLocation, out uint memOffset);
                     memLocation += memOffset;
                 } else {
-                    // Instruction
-                    output += GenerateCode(tokens) + " ";
-                    memLocation++;
+                    // Check for pseudo ops
+                    if (tokens[0] == "movi") {
+                        // Prepare the double instruction
+                        string instr1 = "lui ";
+                        string instr2 = "ori ";
+
+                        // Insert the register to write to
+                        instr1 += tokens[1] + " ";
+                        instr2 += tokens[1] + " ";
+
+                        // Insert rB (same as rA)
+                        instr2 += tokens[1] + " ";
+
+                        // Split the imm value (and check if label!!)
+                        uint imm = 0;
+                        if (labelAddresses.ContainsKey(tokens[2])) {
+                            imm = labelAddresses[tokens[2]]; // Set imm value to label address
+                        } else {
+                            imm = Helper.GetBinFromType(tokens[2]);
+                        }
+                        
+                        uint luiImm = imm >> 17;
+                        uint oriImm = imm & 0b00000000000000011111111111111111;
+
+                        // Insert the imm values
+                        instr1 += luiImm.ToString();
+                        instr2 += oriImm.ToString();
+
+                        // Generate the code
+                        output += GenerateCode(instr1.Split(" "), memLocation) + " ";
+                        output += GenerateCode(instr2.Split(" "), memLocation) + " ";
+                        memLocation += 2;
+                    } else {
+                        // Normal OPCODE Instruction
+                        output += GenerateCode(tokens, memLocation) + " ";
+                        memLocation++;
+                    }
                 }
 
             }
@@ -73,7 +123,13 @@ namespace OppoT2Assembler {
             return output;
         }
 
-        public static uint GenerateCode(string[] tokens) {
+        /// <summary>
+        /// Given a tokenized string representing an instruction, convert to it's binary value as a uint.
+        /// </summary>
+        /// <param name="tokens"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidDataException"></exception>
+        public static uint GenerateCode(string[] tokens, uint memLocation) {
             uint code = 0; 
 
             // Set OPCODE bits
@@ -132,13 +188,15 @@ namespace OppoT2Assembler {
 
             if (instructionFormat == Helper.InstructionFormat.RRCI) {
                 uint cond = (uint)Helper.GetBinFromType(tokens[3]);
-                uint imm = (uint)Helper.GetBinFromType(tokens[4]);
+                uint imm = Helper.GetBinFromType(tokens[4]);
 
                 // Handle issue where the token MAY be a label.
 
                 if (labelAddresses.ContainsKey(tokens[4])) {
-                    // Label found! 
-                    return code | labelAddresses[tokens[4]];
+                    // Label found! Do special math to generate imm value.
+                    uint jmpAddr = labelAddresses[tokens[4]] - memLocation - 1;
+                    jmpAddr &= 0b00000000000000000001111111111111; // Remove non-imm bits
+                    return code | jmpAddr;
                 } else if (imm > 0x1FFF) {
                     throw new InvalidDataException();
                 }
@@ -152,23 +210,39 @@ namespace OppoT2Assembler {
             
         }
 
-        public static string HandleDirectives(string[] tokens, uint memLocation, out uint memLocations) {
+        public static string HandleDirectives(string line, uint memLocation, out uint memLocations) {
+            string[] tokens = line.Split(' ');
             string data = "";
             uint memoryOffset = 0;
+            string directive = tokens[0];
 
-            if (tokens[0] == "@fill") {
-                if (tokens.Count() == 2) {
-                    // This is a fill until command.
-                    uint fillTo = Helper.GetBinFromType(tokens[1]);
-                    if (fillTo == uint.MaxValue) {
-                        throw new InvalidDataException();
-                    }
-                    while (memLocation < fillTo) {
-                        data += "00000000 ";
-                        memoryOffset++;
-                        memLocation++;
-                    }
+            if (directive == "@fillto") {
+                if (tokens.Count() != 2) { // Invalidate wrong token count
+                    throw new InvalidDataException();
                 }
+
+                // This is a fill until command.
+                uint fillTo = Helper.GetBinFromType(tokens[1]);
+                if (fillTo == uint.MaxValue) {
+                    throw new InvalidDataException();
+                }
+
+                while (memLocation < fillTo) {
+                    data += "00000000 ";
+                    memoryOffset++;
+                    memLocation++;
+                }
+
+            } else if (directive == "@ascii") {
+                string asciiString = line[7..];
+                // Fill this portion of memory with an ASCII string, terminated by a null character
+                foreach (char c in asciiString) {
+                    data += (uint)c + " ";
+                    memoryOffset++;
+                }
+
+                data += "00000000 ";
+                memoryOffset++;
             }
 
             memLocations = memoryOffset;

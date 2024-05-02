@@ -42,7 +42,7 @@
 .hang
     brc r0, r0, EQ, hang
 
-@fill 0x2f
+@fillto 0x2f
 
 .intServiceRoutine
     addi s3, r0, 0b11111111111111110

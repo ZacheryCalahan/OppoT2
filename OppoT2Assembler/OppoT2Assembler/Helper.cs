@@ -43,6 +43,7 @@ namespace OppoT2Assembler {
             Opcodes.Add("pop", 13);
             Opcodes.Add("lui", 14);
             Opcodes.Add("isrr", 15);
+            Opcodes.Add("ori", 17);
 
             // Registers
             Registers.Add("r0", 0);
@@ -134,38 +135,40 @@ namespace OppoT2Assembler {
             }
 
             switch (value) {
-                case 0:
+                case 0:     // add
                     return InstructionFormat.RRR;
-                case 1:
+                case 1:     // addi
                     return InstructionFormat.RRI;
-                case 2:
+                case 2:     // or
                     return InstructionFormat.RRR;
-                case 3:
+                case 3:     // xor
                     return InstructionFormat.RRR;
-                case 4:
+                case 4:     // shll
                     return InstructionFormat.RRR;
-                case 5:
+                case 5:     // shlr
                     return InstructionFormat.RRR;
-                case 6:
+                case 6:     // neg
                     return InstructionFormat.RR;
-                case 7:
+                case 7:     // and
                     return InstructionFormat.RRR;
-                case 8:
+                case 8:     // lw
                     return InstructionFormat.RRI;
-                case 9:
+                case 9:     // sw
                     return InstructionFormat.RRI;
-                case 10:
+                case 10:    // brc
                     return InstructionFormat.RRCI;
-                case 11:
+                case 11:    // jalr
                     return InstructionFormat.RRI;
-                case 12:
+                case 12:    // push
                     return InstructionFormat.R;
-                case 13:
+                case 13:    // pop
                     return InstructionFormat.R;
-                case 14:
+                case 14:    // lui
                     return InstructionFormat.RI;
-                case 15:
+                case 15:    // isrr
                     return InstructionFormat.OP;
+                case 17:    // ori
+                    return InstructionFormat.RRI;
                 default:
                     return InstructionFormat.INVALID;
             }
