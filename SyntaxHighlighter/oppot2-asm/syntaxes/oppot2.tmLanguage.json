@@ -1,0 +1,94 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "oppot2",
+	"patterns": [
+		{ "include": "#comments"},
+		{ "include": "#strings" },
+		{ "include": "#numbers" },
+		{ "include": "#symbols"},
+		{ "include": "#registers" },
+		{ "include": "#directives" },
+		{ "include": "#mnemonics" },
+		{ "include": "#condition"}
+	],
+
+	"repository": {
+		"comments": {
+			"patterns" :[{
+				"name": "comment.line",
+				"match": "(\\#).*$"
+			}]
+		},
+
+		"strings": {
+			"name": "string.quoted.double",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [{
+				"name": "constant.character.escape",
+				"match": "\\\\([bfnrt]|(\\d{3})|(x[a-fA-F0-9]+)|\\\\|\\\"|.)"
+			}]
+		},
+
+		"numbers": {
+			"name": "constant.numeric",
+			"match": "\\b(0[bB][01]+|0[xX][a-fA-F0-9]+|0[0-7]*|[1-9][0-9]*)\\b"
+			
+		},
+
+		"directives": {
+			"name": "keyword.control",
+			"patterns": [
+				{
+					"name": "keyword.control",
+					"match": "(@ascii|@fillto|@fill|@org)"
+				},
+				{
+					"name": "meta.preprocessor",
+					"match": "\\b@include\\b"
+				}
+			]
+		},
+
+		"mnemonics": {
+			"name": "keyword",
+			"patterns": [
+				{
+					"name": "keyword.operator",
+					"match": "\\b(addi|add|xor|shll|shlr|ori|neg|and|or|lw|sw|brc|jalr|push|pop|lui|isrr|int|movi)\\b"
+				}
+			]
+		},
+
+		"registers": {
+			"name": "entity.name.tag",
+			"patterns": [
+				{
+					"name": "entity.name.tag",
+					"match": "\\b(ra|sp|isr)\\b"
+				},
+				{
+					"name": "entity.name.tag",
+					"match": "(\\b[st][0-7]|[r][0-9][0-9]|[r][0-9]\\b)"
+				}
+			]
+		},
+
+		"condition": {
+			"name": "entity.name.type",
+			"match": "\\b(eq|\\!eq|gt|gte|lt|lte|pass)\\b"
+		},
+
+		"symbols": {
+			"name": "entity.name.section",
+			"patterns": [
+				{
+					"name": "entity.name.section",
+					"match": "(\\.).*$"
+				}
+		]
+		}
+	},
+
+	"scopeName": "source.oppot2"
+}

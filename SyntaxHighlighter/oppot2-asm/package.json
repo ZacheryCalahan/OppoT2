@@ -1,0 +1,25 @@
+{
+  "name": "oppot2-asm",
+  "displayName": "OppoT2SyntaxHighlighter",
+  "description": "Syntax highlighting for the OppoT2 ISA assembly files",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.89.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "oppot2",
+      "aliases": ["oppot2", "oppot2"],
+      "extensions": [".s",".asm"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "oppot2",
+      "scopeName": "source.oppot2",
+      "path": "./syntaxes/oppot2.tmLanguage.json"
+    }]
+  }
+}

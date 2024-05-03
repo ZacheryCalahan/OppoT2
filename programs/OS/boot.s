@@ -1,3 +1,4 @@
+# comment
 .entry
     movi sp, 0xff
     movi r18, text               # Store the location of the start of the string
@@ -8,7 +9,7 @@
     brc r0, r0, eq, hang
 
 .text
-    @ascii What's up biiiiich!
+    @ascii "Hello!"
 
 @fillto 0x80
 
