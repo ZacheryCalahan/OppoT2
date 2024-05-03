@@ -11,9 +11,11 @@
 .text
     @ascii "Hello!"
 
+@fillto 0x80
+
 @include C:\\Users\\zache\\Documents\\Coding\\CPU\\OppoT2\\programs\\OS\\routines\\print.s
 
-@org 0x1fff
+@fillto 0x1fff
 
 .intServiceRoutine
     addi s3, r0, 0b11111111111111110

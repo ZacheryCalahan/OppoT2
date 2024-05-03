@@ -170,7 +170,7 @@ namespace OppoT2Assembler {
                     memLocation++;
                 }
 
-            } if (directive == "@ascii") {
+            } else if (directive == "@ascii") {
                 string asciiString = line[7..];
                 // Fill this portion of memory with an ASCII string, terminated by a null character
                 foreach (char c in asciiString) {
@@ -180,9 +180,6 @@ namespace OppoT2Assembler {
 
                 data.Add(0);
                 memoryOffset++;
-            } else if (directive == "@org") {
-                uint orgAddress = Helper.GetBinFromType(tokens[1]);
-                memoryOffset = orgAddress - memLocation;
             }
 
             memLocations = memoryOffset;
@@ -192,16 +189,9 @@ namespace OppoT2Assembler {
         public static string GetHexCode(MemoryHandler memoryHandler) {
             string finishedCode = "";
 
-            uint memAddress = 0;
             foreach (Memory memEntry in memoryHandler) {
                 // Get the code
                 uint code = memEntry.instruction;
-                uint instructionAddress = memEntry.memoryAddress;
-
-                while (memAddress != instructionAddress) {
-                    finishedCode += "00000000\n";
-                    memAddress++;
-                }
 
                 // Convert to a Hex String
                 string hexString = Convert.ToHexString(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(code)));
@@ -211,26 +201,17 @@ namespace OppoT2Assembler {
 
                 // Finish up this instruction
                 finishedCode += "\n";
-                memAddress++;
             }
 
             return finishedCode;
         }
 
-        public static uint[] GetBinCode(MemoryHandler memoryHandler) {
-            List<uint> outputFile = new List<uint>();
+        public static byte[] GetBinCode(MemoryHandler memoryHandler) {
+            List<byte> outputFile = new List<byte>();
 
-            uint memAddress = 0;
             foreach (Memory memEntry in memoryHandler) {
-                uint instructionAddress = memEntry.memoryAddress;
-                
-                while (memAddress != instructionAddress) {
-                    outputFile.Add(0u);
-                }
-
-                outputFile.Add(memEntry.instruction);
-
-                memAddress++;
+                byte[] bits = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(memEntry.instruction));
+                outputFile.AddRange(bits);
             }
 
             return outputFile.ToArray();
@@ -268,14 +249,10 @@ namespace OppoT2Assembler {
                 } else if (cleanedSource[i][0] == '@') {
                     if (cleanedSource[i].StartsWith("@ascii")) {
                         currentAddr += (uint)cleanedSource[i].Length - 7;
-                    } if (cleanedSource[i].StartsWith("@fillto")) {
+                    } else if (cleanedSource[i].StartsWith("@fillto")) {
                         string[] tokens = cleanedSource[i].Split(' ');
                         uint addrToFillTo = Helper.GetBinFromType(tokens[1]);
                         currentAddr = addrToFillTo;
-                    } if (cleanedSource[i].StartsWith("@org")) {
-                        string[] tokens = cleanedSource[i].Split(' ');
-                        uint orgAddress = Helper.GetBinFromType(tokens[1]);
-                        currentAddr = orgAddress;
                     }
                 } else {
                     // Special case of movi needs to be handled.
@@ -304,7 +281,7 @@ namespace OppoT2Assembler {
                 foreach (uint data in decodedLine) {
                     memoryHandler.AddMemoryEntry(new Memory(currentAddr, data));
                     // Increment the address
-                    currentAddr += memOffset;
+                    currentAddr++;
                 }
             }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
-
-using OppoT2Assembler;
+﻿using OppoT2Assembler;
 
 class Program {
     public static void Main(String[] args) {
@@ -22,7 +18,7 @@ class Program {
             return;
         }
 
-        GenerateBinFile(args);
+        //GenerateBinFile(args);
     }
 
     public static void Initialize() {
@@ -43,14 +39,16 @@ class Program {
     }
 
     public static void GenerateBinFile(String[] args) {
-        uint[] dwords = Assembler.GetBinCode(Assembler.MapAssemblySource(args[0]));
+        byte[] bytes = Assembler.GetBinCode(Assembler.MapAssemblySource(args[0]));
 
-        using (var stream = File.Open(args[1], FileMode.OpenOrCreate)) {
-            using (var writer = new BinaryWriter(stream)) {
-                foreach (uint word in dwords) {
-                    writer.Write(word);
-                }
+        try {
+            StreamWriter sw = new StreamWriter(args[1]);
+            foreach (byte data in bytes) {
+                sw.Write(data);
             }
+            sw.Close();
+        } catch {
+            Console.Error.WriteLine("Invalid destination path.");
         }
     }
 }
