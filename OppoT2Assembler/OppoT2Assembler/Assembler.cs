@@ -172,6 +172,8 @@ namespace OppoT2Assembler {
 
             } else if (directive == "@ascii") {
                 string asciiString = line[7..];
+                // This is dirty, due to the need of escaped ' " ' chars. Fix later please.
+                asciiString = asciiString.Replace("\"", "");
                 // Fill this portion of memory with an ASCII string, terminated by a null character
                 foreach (char c in asciiString) {
                     data.Add(c);
@@ -248,7 +250,7 @@ namespace OppoT2Assembler {
 
                 } else if (cleanedSource[i][0] == '@') {
                     if (cleanedSource[i].StartsWith("@ascii")) {
-                        currentAddr += (uint)cleanedSource[i].Length - 7;
+                        currentAddr += (uint)cleanedSource[i].Length - 9;
                     } else if (cleanedSource[i].StartsWith("@fillto")) {
                         string[] tokens = cleanedSource[i].Split(' ');
                         uint addrToFillTo = Helper.GetBinFromType(tokens[1]);
