@@ -250,7 +250,12 @@ namespace OppoT2Assembler {
 
                 } else if (cleanedSource[i][0] == '@') {
                     if (cleanedSource[i].StartsWith("@ascii")) {
-                        currentAddr += (uint)cleanedSource[i].Length - 9;
+                        // Get the ascii string and clean of wrapped " chars.
+                        string asciiString = cleanedSource[i].Replace("@ascii", "").Trim();
+                        asciiString = asciiString.Substring(1, asciiString.Length - 2);
+                        Console.WriteLine("Ascii string cleaned to: {0}", asciiString);
+
+                        currentAddr += (uint) asciiString.Length + 1;
                     } else if (cleanedSource[i].StartsWith("@fillto")) {
                         string[] tokens = cleanedSource[i].Split(' ');
                         uint addrToFillTo = Helper.GetBinFromType(tokens[1]);
