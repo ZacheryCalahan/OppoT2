@@ -1,126 +1,63 @@
-﻿using System.Net;
+﻿using OppoT2Assembler.MemHandler;
+using System.Net;
 
 namespace OppoT2Assembler {
     public static class Assembler {
         private static Dictionary<String, uint> labelAddresses = new Dictionary<String, uint>();
 
-        public static string Assemble(String file) {
-            string output = "";
-
-            // Convert file to a list of lines, and strip all empty lines, whitespace, and comments.
-            List<String> lines = file.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
-            for (int i = 0; i < lines.Count; i++) {               
-                // Remove one line comments
-                if (lines[i][0] == '#') {
-                    lines.RemoveAt(i);
-                }
-
-                // Remove trailing comments
-                if (lines[i].Contains('#')) {
-                    int commentStart = lines[i].IndexOf('#');
-                    lines[i] = lines[i].Substring(0, commentStart);
-                }
-
-                lines[i] = lines[i].Replace(",", "");
-            }
-
-            // Pass 1 (Handle Labels)
-
-            // Get each label
-            uint currentAddr = 0;
-            for (int i = 0; i < lines.Count; i++) {
-                lines[i] = lines[i].Trim();
-                // Search for labels
-
-                if (lines[i][0] == '.') {
-                    string label = lines[i].Substring(1);
-                    try {
-                        labelAddresses.Add(label, currentAddr);
-                        lines.RemoveAt(i);
-                        i--;
-                    } catch (ArgumentException e) {
-                        Console.WriteLine(e);
-                        Console.WriteLine("Duplicate label found at line: " + i);
-                    }
-
-                } else if (lines[i][0] == '@') {
-                    if (lines[i].StartsWith("@ascii")) {
-                        currentAddr += (uint) lines[i].Length - 7;
-                    }
-                } else {
-                    // Special case of movi needs to be handled.
-                    if (lines[i].StartsWith("movi")) {
-                        currentAddr += 2;
-                    } else {
-                        currentAddr++;
-                    }
-                }
-            }
-
-            foreach (KeyValuePair<string, uint> label in labelAddresses) {
-                Console.WriteLine("Label: {0}, Address: {1}", label.Key, label.Value);
-            }
-
-            Console.WriteLine("Linted file: ");
-            foreach (string line in lines) {
-                Console.WriteLine(line);
-            }
-
-
+        public static uint[] DecodeLine(string line, uint memLocation, out uint memOffset) {
             // Pass 2 (Convert to machine code ( string >:( ), and perform directives)
             string[] tokens;
-            uint memLocation = 0;
-            for (int i = 0; i < lines.Count; i++) {
-                
-                tokens = lines[i].Trim().Split(' ');
+            List<uint> output = new List<uint>();
 
-                if (tokens[0][0] == '@') { // Check if line starts with '@' symbol
-                    // Directive
-                    output += HandleDirectives(lines[i], memLocation, out uint memOffset);
-                    memLocation += memOffset;
-                } else {
-                    // Check for pseudo ops
-                    if (tokens[0] == "movi") {
-                        // Prepare the double instruction
-                        string instr1 = "lui ";
-                        string instr2 = "ori ";
+            tokens = line.Trim().Split(' ');
 
-                        // Insert the register to write to
-                        instr1 += tokens[1] + " ";
-                        instr2 += tokens[1] + " ";
+            if (tokens[0][0] == '@') { // Check if line starts with '@' symbol
+                // Directive
+                output.AddRange(HandleDirectives(line, memLocation, out uint directiveMemoryOffset));
+                memOffset = directiveMemoryOffset;
 
-                        // Insert rB (same as rA)
-                        instr2 += tokens[1] + " ";
+            } else {
+                // Check for pseudo ops
+                if (tokens[0] == "movi") {
+                    // Prepare the double instruction
+                    string instr1 = "lui ";
+                    string instr2 = "ori ";
 
-                        // Split the imm value (and check if label!!)
-                        uint imm = 0;
-                        if (labelAddresses.ContainsKey(tokens[2])) {
-                            imm = labelAddresses[tokens[2]]; // Set imm value to label address
-                        } else {
-                            imm = Helper.GetBinFromType(tokens[2]);
-                        }
-                        
-                        uint luiImm = imm >> 17;
-                        uint oriImm = imm & 0b00000000000000011111111111111111;
+                    // Insert the register to write to
+                    instr1 += tokens[1] + " ";
+                    instr2 += tokens[1] + " ";
 
-                        // Insert the imm values
-                        instr1 += luiImm.ToString();
-                        instr2 += oriImm.ToString();
+                    // Insert rB (same as rA)
+                    instr2 += tokens[1] + " ";
 
-                        // Generate the code
-                        output += GenerateCode(instr1.Split(" "), memLocation) + " ";
-                        output += GenerateCode(instr2.Split(" "), memLocation) + " ";
-                        memLocation += 2;
+                    // Split the imm value (and check if label!!)
+                    uint imm = 0;
+                    if (labelAddresses.ContainsKey(tokens[2])) {
+                        imm = labelAddresses[tokens[2]]; // Set imm value to label address
                     } else {
-                        // Normal OPCODE Instruction
-                        output += GenerateCode(tokens, memLocation) + " ";
-                        memLocation++;
+                        imm = Helper.GetBinFromType(tokens[2]);
                     }
-                }
+                        
+                    uint luiImm = imm >> 17;
+                    uint oriImm = imm & 0b00000000000000011111111111111111;
 
+                    // Insert the imm values
+                    instr1 += luiImm.ToString();
+                    instr2 += oriImm.ToString();
+
+                    // Generate the code
+                    output.Add(GenerateCode(instr1.Split(" "), memLocation));
+                    output.Add(GenerateCode(instr2.Split(" "), memLocation));
+                    memOffset = 2;
+                } else {
+                    // Normal OPCODE Instruction
+                    output.Add(GenerateCode(tokens, memLocation));
+                    memOffset = 1;
+                }
             }
 
-            return output;
+            return output.ToArray();
         }
 
         /// <summary>
@@ -210,9 +147,9 @@ namespace OppoT2Assembler {
             
         }
 
-        public static string HandleDirectives(string line, uint memLocation, out uint memLocations) {
+        public static uint[] HandleDirectives(string line, uint memLocation, out uint memLocations) {
             string[] tokens = line.Split(' ');
-            string data = "";
+            List<uint> data = new List<uint>();
             uint memoryOffset = 0;
             string directive = tokens[0];
 
@@ -228,7 +165,7 @@ namespace OppoT2Assembler {
                 }
 
                 while (memLocation < fillTo) {
-                    data += "00000000 ";
+                    data.Add(0);
                     memoryOffset++;
                     memLocation++;
                 }
@@ -237,37 +174,202 @@ namespace OppoT2Assembler {
                 string asciiString = line[7..];
                 // Fill this portion of memory with an ASCII string, terminated by a null character
                 foreach (char c in asciiString) {
-                    data += (uint)c + " ";
+                    data.Add(c);
                     memoryOffset++;
                 }
 
-                data += "00000000 ";
+                data.Add(0);
                 memoryOffset++;
             }
 
             memLocations = memoryOffset;
-            return data;
+            return data.ToArray();
         }
 
-        public static string GetHexCode(string processedCode) {
-            string[] codes = processedCode.Split(' ');
+        public static string GetHexCode(MemoryHandler memoryHandler) {
             string finishedCode = "";
-            uint parsedInt;
 
-            foreach (string code in codes) {
-                if (uint.TryParse(code, out parsedInt)) {
-                    // This is hacky. Yes. But it's fully functional!
-                    // This is to get the hex string in big-endian, which is the endianiness of the OppoT2 CPU. This returns a long, but we don't use the upper
-                    // 32 bits, so just cut them off.
-                    string hexString = Convert.ToHexString(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(parsedInt)));
-                    finishedCode += hexString.Substring(hexString.Length - 8);
-                } else {
-                    finishedCode += code;
-                }
+            foreach (Memory memEntry in memoryHandler) {
+                // Get the code
+                uint code = memEntry.instruction;
+
+                // Convert to a Hex String
+                string hexString = Convert.ToHexString(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(code)));
+                hexString.Trim();
+                finishedCode += hexString.Substring(hexString.Length - 8);
+
+
+                // Finish up this instruction
                 finishedCode += "\n";
             }
+
             return finishedCode;
         }
 
+        public static byte[] GetBinCode(MemoryHandler memoryHandler) {
+            List<byte> outputFile = new List<byte>();
+
+            foreach (Memory memEntry in memoryHandler) {
+                byte[] bits = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(memEntry.instruction));
+                outputFile.AddRange(bits);
+            }
+
+            return outputFile.ToArray();
+        }
+
+        public static MemoryHandler MapAssemblySource(string rootFilePath) {
+
+            string rootFile = GetFileContent(rootFilePath);
+            MemoryHandler memoryHandler = new MemoryHandler();
+
+            // Get entire context with includes
+            List<string> cleanedSource = GetFileTree(rootFile);
+
+            foreach (string source in cleanedSource) {
+                Console.WriteLine(source);
+            }
+
+            // Get labels and addresses
+            uint currentAddr = 0;
+            for (int i = 0; i < cleanedSource.Count; i++) {
+                cleanedSource[i] = cleanedSource[i].Trim();
+                // Search for labels
+
+                if (cleanedSource[i][0] == '.') {
+                    string label = cleanedSource[i].Substring(1);
+                    try {
+                        labelAddresses.Add(label, currentAddr);
+                        cleanedSource.RemoveAt(i);
+                        i--;
+                    } catch (ArgumentException e) {
+                        Console.WriteLine(e);
+                        Console.WriteLine("Duplicate label found at line: " + i);
+                    }
+
+                } else if (cleanedSource[i][0] == '@') {
+                    if (cleanedSource[i].StartsWith("@ascii")) {
+                        currentAddr += (uint)cleanedSource[i].Length - 7;
+                    } else if (cleanedSource[i].StartsWith("@fillto")) {
+                        string[] tokens = cleanedSource[i].Split(' ');
+                        uint addrToFillTo = Helper.GetBinFromType(tokens[1]);
+                        currentAddr = addrToFillTo;
+                    }
+                } else {
+                    // Special case of movi needs to be handled.
+                    if (cleanedSource[i].StartsWith("movi")) {
+                        currentAddr += 2;
+                    } else {
+                        currentAddr++;
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<string, uint> pair in labelAddresses) {
+                Console.WriteLine("Label: {0} Address: {1}", pair.Key, pair.Value);
+            }
+
+            // Convert to Memory Handler
+            currentAddr = 0;
+            for (int i = 0; i < cleanedSource.Count; i++) {
+                
+                string currentLine = cleanedSource[i];
+
+                // Get the code for this line
+                uint[] decodedLine = DecodeLine(currentLine, currentAddr, out uint memOffset);
+                
+                // Add to Memory Handler
+                foreach (uint data in decodedLine) {
+                    memoryHandler.AddMemoryEntry(new Memory(currentAddr, data));
+                    // Increment the address
+                    currentAddr++;
+                }
+            }
+
+            // Ensure memory is now in correct order.
+            memoryHandler.SortMemory();
+
+            return memoryHandler;
+        }
+
+        public static string GetFileContent(string filePath) {
+            string fileContent = "";
+            try {
+                StreamReader sr = new StreamReader(filePath);
+                String? line = sr.ReadLine();
+                while (line != null) {
+                    fileContent += line + "\n";
+                    line = sr.ReadLine();
+                }
+
+                sr.Close();
+
+            } catch {
+                Console.Error.WriteLine("Could not find file: " + filePath);
+            }
+
+            return fileContent;
+        }
+
+        public static List<string> CleanAndSplitFile(string file) {
+            // Convert file to a list of lines, and strip all empty lines, whitespace, and comments.
+            List<String> lines = file.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+
+            for (int i = 0; i < lines.Count; i++) {
+                bool dec = false;
+                // Double check empty
+                if (lines[i] == "") {
+                    lines.RemoveAt(i);
+                    dec = true;
+                }
+
+                // Remove one line comments
+                if (lines[i].StartsWith('#')) {
+                    lines.RemoveAt(i);
+                    dec = true;
+                }
+
+                // Remove trailing comments
+                if (lines[i].Contains('#')) {
+                    int commentStart = lines[i].IndexOf('#');
+                    lines[i] = lines[i].Substring(0, commentStart);
+                }
+
+                // Remove commas
+                lines[i] = lines[i].Replace(",", "");
+
+                // Remove remaining whitespace
+                lines[i] = lines[i].Trim();
+
+                if (dec) {
+                    i--;
+                }
+            }
+
+            return lines;
+        }
+
+        public static List<string> GetFileTree(string file) {
+            List<string> completedFile = new List<string>();
+
+            // Get clean version of file
+            List<string> fileLines = CleanAndSplitFile(file);
+
+            for (int i = 0; i < fileLines.Count; i++) {
+                string currentLine = fileLines[i];
+
+                // Check to see if an include exists here
+                if (currentLine.StartsWith("@include")) {
+                    string[] tokens = currentLine.Split(' ');
+                    string includedFile = GetFileContent(tokens[1]);
+                    completedFile.AddRange(GetFileTree(includedFile));
+                    continue;
+                }
+
+                // No include, so just add the line to the source
+                completedFile.Add(currentLine);
+            }
+
+            return completedFile;
+        }
     }
 }

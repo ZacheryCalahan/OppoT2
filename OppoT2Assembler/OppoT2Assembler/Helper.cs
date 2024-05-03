@@ -7,7 +7,7 @@ namespace OppoT2Assembler {
         private static Dictionary<string, uint> Opcodes = new Dictionary<string, uint>();
         private static Dictionary<string, uint> Registers = new Dictionary<string, uint>();
         private static Dictionary<string, uint> Conditionals = new Dictionary<string, uint>();
-
+        
         public static readonly int OpcodeShift = 27;
         public static readonly int RegAShift = 22;
         public static readonly int RegBShift = 17;
@@ -158,7 +158,7 @@ namespace OppoT2Assembler {
                 case 10:    // brc
                     return InstructionFormat.RRCI;
                 case 11:    // jalr
-                    return InstructionFormat.RRI;
+                    return InstructionFormat.RR;
                 case 12:    // push
                     return InstructionFormat.R;
                 case 13:    // pop

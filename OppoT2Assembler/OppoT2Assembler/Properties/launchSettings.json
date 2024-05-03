@@ -2,7 +2,7 @@
   "profiles": {
     "OppoT2Assembler": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\zache\\Documents\\Coding\\CPU\\OppoT2\\asm\\asciiPrint.s \r\nfile.o"
+      "commandLineArgs": "C:\\Users\\zache\\Documents\\Coding\\CPU\\OppoT2\\programs\\OS\\boot.s\r\nC:\\Users\\zache\\Documents\\Coding\\CPU\\OppoT2\\out\\out.o \r\nhex"
     }
   }
 }
