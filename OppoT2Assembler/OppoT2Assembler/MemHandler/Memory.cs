@@ -1,4 +1,6 @@
-﻿namespace OppoT2Assembler.MemHandler
+﻿using OppoT2Assembler.ISADefinitions;
+
+namespace OppoT2Assembler.MemHandler
 {
     public struct Memory
     {

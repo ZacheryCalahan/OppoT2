@@ -1,4 +1,4 @@
-﻿namespace OppoT2Assembler
+﻿namespace OppoT2Assembler.ISADefinitions
 {
     public struct Instruction
     {
@@ -41,7 +41,7 @@
 
         public void SetLabel(string label)
         {
-            this.Label = label;
+            Label = label;
             // Set label to be true
             HasLabel = true;
         }
@@ -60,7 +60,7 @@
                     instruction |= (value & 0b11111) << RegBShift;
                     return;
                 case Operand.RegisterC:
-                    instruction |= (value & 0b11111) & regCMask;
+                    instruction |= value & 0b11111 & regCMask;
                     return;
                 case Operand.Simm17:
                     instruction |= value & simm17Mask;

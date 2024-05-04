@@ -1,4 +1,5 @@
 ﻿using OppoT2Assembler;
+using OppoT2Assembler.ISADefinitions;
 using System.Net;
 using System.Text.RegularExpressions;
 

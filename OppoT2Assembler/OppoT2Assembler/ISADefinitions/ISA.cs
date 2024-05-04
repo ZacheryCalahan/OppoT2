@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace OppoT2Assembler
+namespace OppoT2Assembler.ISADefinitions
 {
     public static class ISA
     {
@@ -223,7 +223,7 @@ namespace OppoT2Assembler
             else
             {
                 // Verify that this value is parsable
-                if (!System.Text.RegularExpressions.Regex.IsMatch(token, @"\A\b[0-9a-fA-Fx]+\b\Z"))
+                if (!Regex.IsMatch(token, @"\A\b[0-9a-fA-Fx]+\b\Z"))
                 {
                     decodedValue = 0;
                     return false;
@@ -266,7 +266,7 @@ namespace OppoT2Assembler
             return Regex.Unescape(asciiString);
         }
 
-        
+
 
 
     }

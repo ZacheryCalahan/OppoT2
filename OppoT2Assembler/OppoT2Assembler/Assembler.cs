@@ -1,4 +1,5 @@
-﻿using OppoT2Assembler.MemHandler;
+﻿using OppoT2Assembler.ISADefinitions;
+using OppoT2Assembler.MemHandler;
 
 namespace OppoT2Assembler
 {
