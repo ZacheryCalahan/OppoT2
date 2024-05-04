@@ -1,16 +1,29 @@
-﻿namespace OppoT2Assembler.MemHandler {
-    public struct Memory {
-        public uint memoryAddress { get; private set; }
-        public uint instruction { get; private set; }
+﻿namespace OppoT2Assembler.MemHandler
+{
+    public struct Memory
+    {
+        public uint MemoryAddress { get; private set; }
+        public object Data { get; private set; }
+        public bool IsInstruction { get; private set; }
 
-        public Memory(uint memoryAddress, uint instruction) {
-            this.memoryAddress = memoryAddress;
-            this.instruction = instruction;
+        public Memory(uint memoryAddress, uint data)
+        {
+            MemoryAddress = memoryAddress;
+            Data = data;
+            IsInstruction = false;
         }
 
-        public Memory() {
-            memoryAddress = 0;
-            instruction = 0;
+        public Memory(uint memoryAddress, Instruction instruction)
+        {
+            MemoryAddress = memoryAddress;
+            Data = instruction;
+            IsInstruction = true;
+        }
+
+        public void SetData(uint data)
+        {
+            Data = data;
+            IsInstruction = false;
         }
     }
 }
