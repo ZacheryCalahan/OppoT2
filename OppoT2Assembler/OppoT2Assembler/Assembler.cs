@@ -1,342 +1,479 @@
 ﻿using OppoT2Assembler.MemHandler;
-using System.Net;
 
-namespace OppoT2Assembler {
-    public static class Assembler {
+namespace OppoT2Assembler
+{
+    public static class Assembler
+    {
         private static Dictionary<String, uint> labelAddresses = new Dictionary<String, uint>();
+        
 
-        public static uint[] DecodeLine(string line, uint memLocation, out uint memOffset) {
-            // Pass 2 (Convert to machine code ( string >:( ), and perform directives)
-            string[] tokens;
-            List<uint> output = new List<uint>();
-
-            tokens = line.Trim().Split(' ');
-
-            if (tokens[0][0] == '@') { // Check if line starts with '@' symbol
-                // Directive
-                output.AddRange(HandleDirectives(line, memLocation, out uint directiveMemoryOffset));
-                memOffset = directiveMemoryOffset;
-
-            } else {
-                // Check for pseudo ops
-                if (tokens[0] == "movi") {
-                    // Prepare the double instruction
-                    string instr1 = "lui ";
-                    string instr2 = "ori ";
-
-                    // Insert the register to write to
-                    instr1 += tokens[1] + " ";
-                    instr2 += tokens[1] + " ";
-
-                    // Insert rB (same as rA)
-                    instr2 += tokens[1] + " ";
-
-                    // Split the imm value (and check if label!!)
-                    uint imm = 0;
-                    if (labelAddresses.ContainsKey(tokens[2])) {
-                        imm = labelAddresses[tokens[2]]; // Set imm value to label address
-                    } else {
-                        imm = Helper.GetBinFromType(tokens[2]);
-                    }
-                        
-                    uint luiImm = imm >> 17;
-                    uint oriImm = imm & 0b00000000000000011111111111111111;
-
-                    // Insert the imm values
-                    instr1 += luiImm.ToString();
-                    instr2 += oriImm.ToString();
-
-                    // Generate the code
-                    output.Add(GenerateCode(instr1.Split(" "), memLocation));
-                    output.Add(GenerateCode(instr2.Split(" "), memLocation));
-                    memOffset = 2;
-                } else {
-                    // Normal OPCODE Instruction
-                    output.Add(GenerateCode(tokens, memLocation));
-                    memOffset = 1;
-                }
-            }
-
-            return output.ToArray();
+        // Methods
+        public static uint[] AssembleFile(string filepath)
+        {
+            return GenerateCode(GenerateMemoryEntries(filepath));
         }
 
-        /// <summary>
-        /// Given a tokenized string representing an instruction, convert to it's binary value as a uint.
-        /// </summary>
-        /// <param name="tokens"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidDataException"></exception>
-        public static uint GenerateCode(string[] tokens, uint memLocation) {
-            uint code = 0; 
+        public static uint[] GenerateCode(MemoryHandler memMap)
+        {
+            List<uint> code = new List<uint>();
 
-            // Set OPCODE bits
-            code |= (uint) Helper.GetBinFromType(tokens[0]) << Helper.OpcodeShift;
+            uint memMapSize = memMap.program.Last().MemoryAddress;
 
-            // Determine Type
-            Helper.InstructionFormat instructionFormat = Helper.GetInstructionType(tokens[0]);
-
-            if (instructionFormat == Helper.InstructionFormat.OP) { // No further work here!
-                return code;
-            }
-
-            // We know for sure that the remaining opcodes at least have a rA value.
-            uint regA = (uint) Helper.GetBinFromType(tokens[1]);
-            code |= regA << Helper.RegAShift;
-
-            // Return if instruction is of type R
-            if (instructionFormat == Helper.InstructionFormat.R) {
-                return code;
-            }
-
-            // Eliminate oddball RI format
-            if (instructionFormat == Helper.InstructionFormat.RI) {
-                // Verify that the imm value is smaller than 
-                uint imm = (uint) Helper.GetBinFromType(tokens[2]);
-
-                if (imm > 0x7fff) {
-                    throw new InvalidDataException();
+            uint address = 0;
+            foreach (Memory entry in memMap)
+            {
+                // Instructions need to be converted.
+                if (entry.IsInstruction)
+                {
+                    throw new NotImplementedException();
                 }
 
-                return code | imm;
-            }
-
-            // Remaining opcodes have a rB
-            uint regB = (uint) Helper.GetBinFromType(tokens[2]);
-            code |= regB << Helper.RegBShift;
-
-            if (instructionFormat == Helper.InstructionFormat.RR) { // All done here.
-                return code;
-            }
-
-            // All the remaining opcodes are functionally different, so handle them individually.
-            if (instructionFormat == Helper.InstructionFormat.RRR) {
-                uint regC = (uint) Helper.GetBinFromType(tokens[3]);
-                return code | regC;
-            }
-
-            if (instructionFormat == Helper.InstructionFormat.RRI) {
-                uint imm = (uint) Helper.GetBinFromType(tokens[3]);
-                if (imm > 131071u) {
-                    throw new InvalidDataException();
+                while (entry.MemoryAddress != address)
+                {
+                    code.Add(0);
+                    address++;
                 }
 
-                return code | imm;
+                code.Add((uint) entry.Data);
+                address++;
             }
-
-            if (instructionFormat == Helper.InstructionFormat.RRCI) {
-                uint cond = (uint)Helper.GetBinFromType(tokens[3]);
-                uint imm = Helper.GetBinFromType(tokens[4]);
-
-                // Handle issue where the token MAY be a label.
-
-                if (labelAddresses.ContainsKey(tokens[4])) {
-                    // Label found! Do special math to generate imm value.
-                    uint jmpAddr = labelAddresses[tokens[4]] - memLocation - 1;
-                    jmpAddr &= 0b00000000000000000001111111111111; // Remove non-imm bits
-                    return code | jmpAddr;
-                } else if (imm > 0x1FFF) {
-                    throw new InvalidDataException();
-                }
-
-                code |= cond << Helper.ConditionalShift;
-                return code | imm;
-            }
-
-            // Shouldn't get here. If we get here, throw exception
-            throw new InvalidDataException();
             
+
+            return code.ToArray();
         }
 
-        public static uint[] HandleDirectives(string line, uint memLocation, out uint memLocations) {
-            string[] tokens = line.Split(' ');
-            List<uint> data = new List<uint>();
-            uint memoryOffset = 0;
-            string directive = tokens[0];
+        public static MemoryHandler GenerateMemoryEntries(string filePath)
+        {
+            // Vars
+            MemoryHandler memMap = new MemoryHandler();
+            string rootFile = GetFileContent(filePath);
 
-            if (directive == "@fillto") {
-                if (tokens.Count() != 2) { // Invalidate wrong token count
-                    throw new InvalidDataException();
+            List<string> fileLines = GetFileTree(rootFile);
+
+            // Pass 1: Generate Labels, and decode lines to Instruction.
+            //List<Instruction> instructions = new List<Instruction>(); // Instructions list 
+            uint address = 0; // Memory Address
+            foreach (string line in fileLines)
+            {
+                // Check if this line is a label
+                if (line.StartsWith(ISA.labelMarker))
+                {
+                    labelAddresses.Add(line.Substring(1), address);
                 }
+                // Check if this line is a directive
+                else if (line.StartsWith(ISA.directiveMarker))
+                {
+                    if (line.StartsWith("@ascii"))
+                    {
 
-                // This is a fill until command.
-                uint fillTo = Helper.GetBinFromType(tokens[1]);
-                if (fillTo == uint.MaxValue) {
-                    throw new InvalidDataException();
+                        // Get the ascii string that will be placed in the executable
+                        string token = line.Replace("@ascii", "").Trim();
+                        token = token.Substring(1, token.Length - 2);
+                        string decodedAscii = ISA.GetAsciiFromDirective(token);
+                        decodedAscii += "\0";
+
+                        // Create a memory entry for each char.
+                        foreach (char c in decodedAscii)
+                        {
+                            memMap.AddMemoryEntry(new Memory(address, c));
+                            address++;
+                        }
+
+                        
+                    }
+                    else if (line.StartsWith("@org"))
+                    {
+                        if (!ISA.TryGetBinFromType(line.Split(" ")[1], out uint orgAddress)) {
+                            throw new InvalidDataException();
+                        }
+
+                        address = orgAddress;
+                    }
                 }
-
-                while (memLocation < fillTo) {
-                    data.Add(0);
-                    memoryOffset++;
-                    memLocation++;
-                }
-
-            } else if (directive == "@ascii") {
-                string asciiString = line[7..];
-                // This is dirty, due to the need of escaped ' " ' chars. Fix later please.
-                asciiString = asciiString.Replace("\"", "");
-                // Fill this portion of memory with an ASCII string, terminated by a null character
-                foreach (char c in asciiString) {
-                    data.Add(c);
-                    memoryOffset++;
-                }
-
-                data.Add(0);
-                memoryOffset++;
-            }
-
-            memLocations = memoryOffset;
-            return data.ToArray();
-        }
-
-        public static string GetHexCode(MemoryHandler memoryHandler) {
-            string finishedCode = "";
-
-            foreach (Memory memEntry in memoryHandler) {
-                // Get the code
-                uint code = memEntry.instruction;
-
-                // Convert to a Hex String
-                string hexString = Convert.ToHexString(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(code)));
-                hexString.Trim();
-                finishedCode += hexString.Substring(hexString.Length - 8);
-
-
-                // Finish up this instruction
-                finishedCode += "\n";
-            }
-
-            return finishedCode;
-        }
-
-        public static byte[] GetBinCode(MemoryHandler memoryHandler) {
-            List<byte> outputFile = new List<byte>();
-
-            foreach (Memory memEntry in memoryHandler) {
-                byte[] bits = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(memEntry.instruction));
-                outputFile.AddRange(bits);
-            }
-
-            return outputFile.ToArray();
-        }
-
-        public static MemoryHandler MapAssemblySource(string rootFilePath) {
-
-            string rootFile = GetFileContent(rootFilePath);
-            MemoryHandler memoryHandler = new MemoryHandler();
-
-            // Get entire context with includes
-            List<string> cleanedSource = GetFileTree(rootFile);
-
-            foreach (string source in cleanedSource) {
-                Console.WriteLine(source);
-            }
-
-            // Get labels and addresses
-            uint currentAddr = 0;
-            for (int i = 0; i < cleanedSource.Count; i++) {
-                cleanedSource[i] = cleanedSource[i].Trim();
-                // Search for labels
-
-                if (cleanedSource[i][0] == '.') {
-                    string label = cleanedSource[i].Substring(1);
-                    try {
-                        labelAddresses.Add(label, currentAddr);
-                        cleanedSource.RemoveAt(i);
-                        i--;
-                    } catch (ArgumentException e) {
-                        Console.WriteLine(e);
-                        Console.WriteLine("Duplicate label found at line: " + i);
+                // By elim, this is an instruction
+                else
+                {
+                    if (!TryHandleInstruction(line, out List<Instruction> listOfInstructions, out uint instructionCount))
+                    {
+                        throw new InvalidDataException();
                     }
 
-                } else if (cleanedSource[i][0] == '@') {
-                    if (cleanedSource[i].StartsWith("@ascii")) {
-                        // Get the ascii string and clean of wrapped " chars.
-                        string asciiString = cleanedSource[i].Replace("@ascii", "").Trim();
-                        asciiString = asciiString.Substring(1, asciiString.Length - 2);
-                        Console.WriteLine("Ascii string cleaned to: {0}", asciiString);
-
-                        currentAddr += (uint) asciiString.Length + 1;
-                    } else if (cleanedSource[i].StartsWith("@fillto")) {
-                        string[] tokens = cleanedSource[i].Split(' ');
-                        uint addrToFillTo = Helper.GetBinFromType(tokens[1]);
-                        currentAddr = addrToFillTo;
-                    }
-                } else {
-                    // Special case of movi needs to be handled.
-                    if (cleanedSource[i].StartsWith("movi")) {
-                        currentAddr += 2;
-                    } else {
-                        currentAddr++;
+                    foreach (Instruction instruction in  listOfInstructions)
+                    {
+                        memMap.AddMemoryEntry(new Memory(address, instruction));
+                        address++;
                     }
                 }
             }
 
-            foreach (KeyValuePair<string, uint> pair in labelAddresses) {
-                Console.WriteLine("Label: {0} Address: {1}", pair.Key, pair.Value);
-            }
+            // Pass 2: Fill all unmarked labels, and convert Instruction objects to uints
 
-            // Convert to Memory Handler
-            currentAddr = 0;
-            for (int i = 0; i < cleanedSource.Count; i++) {
-                
-                string currentLine = cleanedSource[i];
+            for (int i = 0; i < memMap.Count(); i++)
+            {
+                Memory memEntry = memMap.program[i];
+                // Focus on Memory Entries that are instructions, as non-instructions are finished.
+                if (memEntry.IsInstruction)
+                {
 
-                // Get the code for this line
-                uint[] decodedLine = DecodeLine(currentLine, currentAddr, out uint memOffset);
-                
-                // Add to Memory Handler
-                foreach (uint data in decodedLine) {
-                    memoryHandler.AddMemoryEntry(new Memory(currentAddr, data));
-                    // Increment the address
-                    currentAddr++;
+                    // Get required data
+                    Instruction instruction = (Instruction) memEntry.Data;
+                    uint memoryLocation = memEntry.MemoryAddress;
+                    uint opcode = instruction.GetOpcode();
+
+                    // Only handle instructions with incomplete data.
+                    if (instruction.HasSplitLabel)
+                    {
+                        uint labelAddress = labelAddresses[instruction.Label];
+                        // Need to split the label address into its components based on the opcode.
+                        if (opcode == ISA.Opcodes["lui"])
+                        {
+                            uint luiImm = labelAddress >> 17;
+                            instruction.SetOperand(Instruction.Operand.Simm17, luiImm);
+                        }
+                        else if (opcode == ISA.Opcodes["ori"])
+                        {
+                            uint oriImm = labelAddress & 0b00000000000000011111111111111111;
+                            instruction.SetOperand(Instruction.Operand.Simm17, oriImm);
+                        }
+                        else
+                        {
+                            // Split label, but not movi?!?
+                            throw new Exception();
+                        }
+
+                        // Label is mapped, rewrite memEntry to be completed.
+                        if (!instruction.TryGetInstruction(out uint data))
+                        {
+                            throw new Exception();
+                        }
+                        memMap.program[i] = new Memory(memoryLocation, data);
+                    }
+                    else if (instruction.HasLabel)
+                    {
+                        uint labelAddress = labelAddresses[instruction.Label];
+                        // Branch Conditional uses an offset, not the direct address. Handle this first.
+                        if (opcode == ISA.Opcodes["brc"])
+                        {
+                            instruction.SetOperand(Instruction.Operand.Simm13, labelAddress - memoryLocation - 1);
+                            if (!instruction.TryGetInstruction(out uint data))
+                            {
+                                throw new Exception(); // This means that the label wasn't properly taken care of.
+                            }
+
+                            memMap.program[i] = new Memory(memoryLocation, data);
+                        }
+                        else
+                        {
+                            throw new Exception(); // This means something else has a label, and I didn't think of it.
+                        }
+                    }
+                    else
+                    // Convert memEntries with Instruction to uints
+                    {
+                        if (!instruction.TryGetInstruction(out uint data))
+                        {
+                            throw new Exception(); // This means that the label wasn't properly taken care of.
+                        }
+
+                        memMap.program[i] = new Memory(memoryLocation, data);
+                    }
+                    
                 }
             }
 
-            // Ensure memory is now in correct order.
-            memoryHandler.SortMemory();
-
-            return memoryHandler;
+            // Sort addresses to be in ascending order for conversion.
+            memMap.SortMemory();
+            return memMap;
         }
 
-        public static string GetFileContent(string filePath) {
+        public static bool TryHandleInstruction(string line, out List<Instruction> listOfInstructions, out uint instructionCount)
+        {
+            string[] tokens = line.Split(" ");
+            List<Instruction> instructions = new List<Instruction>();
+
+            // Get the count of tokens, and the instruction format.
+
+            uint expectedTokenCount = ISA.GetTokenCountFromOpcode(tokens[0]);
+            ISA.InstructionFormat format = ISA.GetInstructionType(tokens[0]);
+
+            // Catch invalid instructions
+            if (format == ISA.InstructionFormat.INVALID)
+            {
+                listOfInstructions = null;
+                instructionCount = 0;
+                return false;
+            }
+
+            if (expectedTokenCount != tokens.Length)
+            {
+                listOfInstructions = null;
+                instructionCount = 0;
+                return false;
+            }
+
+            // Handle the instruction
+
+            // Handle special cases of psuedo ops
+            if (line.StartsWith("movi"))
+            {
+                // Build Instructions
+                Instruction luiInstruction = new Instruction();
+                luiInstruction.SetOperand(Instruction.Operand.Opcode, ISA.Opcodes["lui"]);
+                Instruction oriInstruction = new Instruction();
+                oriInstruction.SetOperand(Instruction.Operand.Opcode, ISA.Opcodes["ori"]);
+
+                // Generate reg A
+                if (!ISA.TryGetBinFromType(tokens[1], out uint moviRegA))
+                {
+                    listOfInstructions = null;
+                    instructionCount = 0;
+                    return false;
+                }
+
+                luiInstruction.SetOperand(Instruction.Operand.RegisterA, moviRegA);
+                oriInstruction.SetOperand(Instruction.Operand.RegisterA, moviRegA);
+                oriInstruction.SetOperand(Instruction.Operand.RegisterB, moviRegA);
+
+                // Determine if label, or hardcoded imm value.
+                if (ISA.TryGetBinFromType(tokens[2], out uint moviImm)) {
+                    // Get imm values
+                    uint luiImm = moviImm >> 17;
+                    uint oriImm = moviImm & 0b00000000000000011111111111111111;
+
+                    luiInstruction.SetOperand(Instruction.Operand.Imm15, luiImm);
+                    oriInstruction.SetOperand(Instruction.Operand.Simm17, oriImm);
+
+                    // Push and return
+                    instructions.Add(luiInstruction);
+                    instructions.Add(oriInstruction);
+                    listOfInstructions = instructions;
+                    instructionCount = 2;
+                    return true;
+                }
+                // This is a label.
+                else
+                {
+                    // Flag instruction as incomplete.
+                    luiInstruction.HasSplitLabel = true;
+                    oriInstruction.HasSplitLabel = true;
+                    luiInstruction.SetLabel(tokens[2]);
+                    oriInstruction.SetLabel(tokens[2]);
+
+                    // Push and return.
+                    instructions.Add(luiInstruction);
+                    instructions.Add(oriInstruction);
+                    listOfInstructions = instructions;
+                    instructionCount = 2;
+                    return true;
+                }
+            }
+
+            // If we reach this point, we know for sure that the instruction is one dword.
+            Instruction instruction = new Instruction();
+            instructionCount = 1;
+
+            // Get Opcode
+            if (!ISA.TryGetBinFromType(tokens[0], out uint opcode))
+            {
+                instructions.Add(instruction);
+                listOfInstructions = instructions;
+                instructionCount = 0;
+                return false;
+            }
+
+            instruction.SetOperand(Instruction.Operand.Opcode, opcode);
+
+            // Check for OP
+            if (format == ISA.InstructionFormat.OP)
+            {
+                instructions.Add(instruction);
+                listOfInstructions = instructions;
+                return true;
+            }
+
+            // Get regA
+            if (!ISA.TryGetBinFromType(tokens[1], out uint regA))
+            {
+                instructions.Add(instruction);
+                listOfInstructions = instructions;
+                instructionCount = 0;
+                return false;
+            }
+
+            instruction.SetOperand(Instruction.Operand.RegisterA, regA);
+
+            // Check for type R
+            if (format == ISA.InstructionFormat.R)
+            {
+                instructions.Add(instruction);
+                listOfInstructions = instructions;
+                return true;
+            }
+
+            // Check for type RI
+            if (format == ISA.InstructionFormat.RI)
+            {
+                if (!ISA.TryGetBinFromType(tokens[2], out uint imm15))
+                {
+                    instructions.Add(instruction);
+                    listOfInstructions = instructions;
+                    instructionCount = 0;
+                    return false;
+                }
+
+                instruction.SetOperand(Instruction.Operand.Imm15, imm15);
+                instructions.Add(instruction);
+                listOfInstructions = instructions;
+                return true;
+            }
+
+            // Get regB
+            if (!ISA.TryGetBinFromType(tokens[2], out uint regB))
+            {
+                instructions.Add(instruction);
+                listOfInstructions = instructions;
+                instructionCount = 0;
+                return false;
+            }
+
+            instruction.SetOperand(Instruction.Operand.RegisterB, regB);
+
+            // Check for type RR
+            if (format == ISA.InstructionFormat.RR)
+            {
+                instructions.Add(instruction);
+                listOfInstructions = instructions;
+                return true;
+            }
+
+            // All remaining opcodes are not identical beyone already computed operands.
+
+            // Check for RRR
+            if (format == ISA.InstructionFormat.RRR)
+            {
+                if (!ISA.TryGetBinFromType(tokens[3], out uint regC))
+                {
+                    instructions.Add(instruction);
+                    listOfInstructions = instructions;
+                    instructionCount = 0;
+                    return false;
+                }
+
+                instruction.SetOperand(Instruction.Operand.RegisterC, regC);
+                instructions.Add(instruction);
+                listOfInstructions = instructions;
+                return true;
+
+            }
+
+            // Check for RRI
+            if (format == ISA.InstructionFormat.RRI)
+            {
+                if (!ISA.TryGetBinFromType(tokens[3], out uint simm17))
+                {
+                    instructions.Add(instruction);
+                    listOfInstructions = instructions;
+                    instructionCount = 0;
+                    return false;
+                }
+
+                instruction.SetOperand(Instruction.Operand.Simm17, simm17);
+                instructions.Add(instruction);
+                listOfInstructions = instructions;
+                return true;
+            }
+
+            // Check for RRCI
+            if (format == ISA.InstructionFormat.RRCI)
+            {
+                // Get Conditional
+                if (!ISA.TryGetBinFromType(tokens[3], out uint cond))
+                {
+                    instructions.Add(instruction);
+                    listOfInstructions = instructions;
+                    instructionCount = 0;
+                    return false;
+                }
+
+                instruction.SetOperand(Instruction.Operand.Cond, cond);
+
+                // Check if imm or label
+                if (ISA.TryGetBinFromType(tokens[4], out uint simm13))
+                {
+                    // Imm value
+                    instruction.SetOperand(Instruction.Operand.Simm13, simm13);
+                    instructions.Add(instruction);
+                    listOfInstructions = instructions;
+                    return true;
+                }
+                else
+                {
+                    // Label
+                    instruction.SetLabel(tokens[4]);
+                    instructions.Add(instruction);
+                    listOfInstructions = instructions;
+                    return true;
+                }
+
+            }
+
+            // We should never get here.
+
+            instructions.Add(instruction);
+            listOfInstructions = instructions;
+            instructionCount = 0;
+            return false;
+        }
+
+        public static string GetFileContent(string filePath)
+        {
             string fileContent = "";
-            try {
+            try
+            {
                 StreamReader sr = new StreamReader(filePath);
                 String? line = sr.ReadLine();
-                while (line != null) {
+                while (line != null)
+                {
                     fileContent += line + "\n";
                     line = sr.ReadLine();
                 }
 
                 sr.Close();
 
-            } catch {
+            }
+            catch
+            {
                 Console.Error.WriteLine("Could not find file: " + filePath);
             }
 
             return fileContent;
         }
 
-        public static List<string> CleanAndSplitFile(string file) {
+        public static List<string> CleanAndSplitFile(string file)
+        {
             // Convert file to a list of lines, and strip all empty lines, whitespace, and comments.
             List<String> lines = file.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
 
-            for (int i = 0; i < lines.Count; i++) {
+            for (int i = 0; i < lines.Count; i++)
+            {
                 bool dec = false;
                 // Double check empty
-                if (lines[i] == "") {
+                if (lines[i] == "")
+                {
                     lines.RemoveAt(i);
                     dec = true;
                 }
 
                 // Remove one line comments
-                if (lines[i].StartsWith('#')) {
+                if (lines[i].StartsWith('#'))
+                {
                     lines.RemoveAt(i);
                     dec = true;
                 }
 
                 // Remove trailing comments
-                if (lines[i].Contains('#')) {
+                if (lines[i].Contains('#'))
+                {
                     int commentStart = lines[i].IndexOf('#');
                     lines[i] = lines[i].Substring(0, commentStart);
                 }
@@ -347,7 +484,8 @@ namespace OppoT2Assembler {
                 // Remove remaining whitespace
                 lines[i] = lines[i].Trim();
 
-                if (dec) {
+                if (dec)
+                {
                     i--;
                 }
             }
@@ -355,17 +493,20 @@ namespace OppoT2Assembler {
             return lines;
         }
 
-        public static List<string> GetFileTree(string file) {
+        public static List<string> GetFileTree(string file)
+        {
             List<string> completedFile = new List<string>();
 
             // Get clean version of file
             List<string> fileLines = CleanAndSplitFile(file);
 
-            for (int i = 0; i < fileLines.Count; i++) {
+            for (int i = 0; i < fileLines.Count; i++)
+            {
                 string currentLine = fileLines[i];
 
                 // Check to see if an include exists here
-                if (currentLine.StartsWith("@include")) {
+                if (currentLine.StartsWith("@include"))
+                {
                     string[] tokens = currentLine.Split(' ');
                     string includedFile = GetFileContent(tokens[1]);
                     completedFile.AddRange(GetFileTree(includedFile));

@@ -1,54 +1,63 @@
 ﻿using OppoT2Assembler;
+using System.Net;
+using System.Text.RegularExpressions;
 
-class Program {
-    public static void Main(String[] args) {
+class Program
+{
+    public static void Main(String[] args)
+    {
         Initialize();
 
-        if (args.Length > 2) {
-            // Flags are set
-            if (args[2] == "hex") {
-                GenerateHexFile(args);
-            } else {
-                Console.Error.WriteLine("Invalid arguments.");
-                foreach (var arg in args) {
-                    Console.Write(arg + " ");
+        string fileRead = args[0];
+        string fileWrite = args[1];
+
+        uint[] assembledFile = Assembler.AssembleFile(fileRead);
+
+        WriteHexFile(assembledFile, fileWrite);
+    }
+
+    public static void WriteBinFile(uint[] assembledFile, string path)
+    {
+        using (var stream = File.Open(path, FileMode.OpenOrCreate))
+        {
+            using (var writer = new BinaryWriter(stream))
+            {
+                foreach (uint dword in assembledFile)
+                {
+                    writer.Write(dword);
+                    // Writes in little-endian.
                 }
             }
-
-            return;
-        }
-
-        //GenerateBinFile(args);
-    }
-
-    public static void Initialize() {
-        Helper.InitDictionaries();
-    }
-
-
-    public static void GenerateHexFile(String[] args) {
-        string data = Assembler.GetHexCode(Assembler.MapAssemblySource(args[0]));
-        try {
-            StreamWriter sw = new StreamWriter(args[1]);
-            sw.Write(data);
-            sw.Close();
-        } catch {
-            Console.Error.WriteLine("Invalid destination path.");
-
         }
     }
 
-    public static void GenerateBinFile(String[] args) {
-        byte[] bytes = Assembler.GetBinCode(Assembler.MapAssemblySource(args[0]));
+    public static void WriteHexFile(uint[] assembledFile, string path)
+    {
+        string hexCode = "";
 
-        try {
-            StreamWriter sw = new StreamWriter(args[1]);
-            foreach (byte data in bytes) {
-                sw.Write(data);
-            }
-            sw.Close();
-        } catch {
-            Console.Error.WriteLine("Invalid destination path.");
+        foreach (uint dword in assembledFile)
+        {
+            string hexString = Convert.ToHexString(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(dword))).Trim();
+            hexCode += hexString.Substring(hexString.Length - 8);
+
+            hexCode += "\n";
+        }
+
+        try
+        {
+            StreamWriter sr = new StreamWriter(path);
+            sr.Write(hexCode);
+            sr.Close();
+        }
+        catch (Exception ex)
+        {
+
         }
     }
+
+    public static void Initialize()
+    {
+        ISA.InitDictionaries();
+    }
+
 }
