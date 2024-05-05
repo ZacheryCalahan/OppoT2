@@ -11,6 +11,11 @@ namespace OppoT2Assembler.MemHandler
             program = new List<Memory>();
         }
 
+        public bool IsEmpty()
+        {
+            return program.Count == 0;
+        }
+
         public void SortMemory()
         {
             program.OrderBy(x => x.MemoryAddress);

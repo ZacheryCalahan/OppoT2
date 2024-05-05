@@ -1,6 +1,8 @@
 ﻿using OppoT2Assembler.ISADefinitions;
 using OppoT2Assembler.MemHandler;
 
+using OppoT2Assembler.ErrorHandler;
+
 namespace OppoT2Assembler
 {
     public static class Assembler
@@ -11,7 +13,15 @@ namespace OppoT2Assembler
         // Methods
         public static uint[] AssembleFile(string filepath)
         {
-            return GenerateCode(GenerateMemoryEntries(filepath));
+            MemoryHandler memMap = GenerateMemoryEntries(filepath);
+
+            // If empty, syntax errors exist, or no file. Either way, what would you write?
+            if (memMap.IsEmpty())
+            {
+                return new uint[0];
+            }
+
+            return GenerateCode(memMap);
         }
 
         public static uint[] GenerateCode(MemoryHandler memMap)
@@ -46,8 +56,9 @@ namespace OppoT2Assembler
         public static MemoryHandler GenerateMemoryEntries(string filePath)
         {
             // Vars
-            MemoryHandler memMap = new MemoryHandler();
-            string rootFile = GetFileContent(filePath);
+            MemoryHandler memMap = new MemoryHandler(); // Memory Map
+            string rootFile = GetFileContent(filePath); // String of all source lines
+            SyntaxErrors syntaxErrors = new SyntaxErrors(); // List of any syntax errors
 
             List<string> fileLines = GetFileTree(rootFile);
 
@@ -56,14 +67,15 @@ namespace OppoT2Assembler
             uint address = 0; // Memory Address
             foreach (string line in fileLines)
             {
-                // Check if this line is a label
+                // Labels
                 if (line.StartsWith(ISA.labelMarker))
                 {
                     labelAddresses.Add(line.Substring(1), address);
                 }
-                // Check if this line is a directive
+                // Directives
                 else if (line.StartsWith(ISA.directiveMarker))
                 {
+                    // Ascii Directive
                     if (line.StartsWith("@ascii"))
                     {
 
@@ -78,33 +90,60 @@ namespace OppoT2Assembler
                         {
                             memMap.AddMemoryEntry(new Memory(address, c));
                             address++;
-                        }
-
-                        
+                        }                        
                     }
+                    // Org Directive
                     else if (line.StartsWith("@org"))
                     {
                         if (!ISA.TryGetBinFromType(line.Split(" ")[1], out uint orgAddress)) {
-                            throw new InvalidDataException();
+                            syntaxErrors.AddError(line, SyntaxErrors.Error.InvalidAddress);
                         }
 
                         address = orgAddress;
+                    } 
+                    else
+                    {
+                        syntaxErrors.AddError(line, SyntaxErrors.Error.InvalidDirective);
                     }
                 }
-                // By elim, this is an instruction
+                // Instructions
                 else
                 {
-                    if (!TryHandleInstruction(line, out List<Instruction> listOfInstructions, out uint instructionCount))
+                    if (!TryHandleInstruction(line, out List<Instruction> listOfInstructions, out uint instructionCount, out SyntaxErrors.Error? error))
                     {
-                        throw new InvalidDataException();
-                    }
+                        if (error == null)
+                        {
+                            throw new Exception();
+                        }
 
-                    foreach (Instruction instruction in  listOfInstructions)
-                    {
-                        memMap.AddMemoryEntry(new Memory(address, instruction));
-                        address++;
+                        syntaxErrors.AddError(line, (SyntaxErrors.Error) error);
                     }
+                    
+                    // Verify list has no errors.
+                    if (listOfInstructions == null)
+                    {
+                        syntaxErrors.AddError(line, SyntaxErrors.Error.InvalidInstruction);
+                    } 
+                    else
+                    {
+                        foreach (Instruction instruction in listOfInstructions)
+                        {
+                            memMap.AddMemoryEntry(new Memory(address, instruction));
+                            address++;
+                        }
+                    }
+                    
                 }
+            }
+
+            // If syntax errors are present, do not run pass 2 with invalid data.
+            if (!syntaxErrors.IsEmpty())
+            {
+                foreach (SyntaxErrors.SyntaxInfo lineInfo in syntaxErrors)
+                {
+                    Console.WriteLine("Error: {0} contains {1} error.", lineInfo.line, Enum.GetName(lineInfo.error));
+                }
+                return new MemoryHandler();
             }
 
             // Pass 2: Fill all unmarked labels, and convert Instruction objects to uints
@@ -187,7 +226,7 @@ namespace OppoT2Assembler
             return memMap;
         }
 
-        public static bool TryHandleInstruction(string line, out List<Instruction> listOfInstructions, out uint instructionCount)
+        public static bool TryHandleInstruction(string line, out List<Instruction> listOfInstructions, out uint instructionCount, out SyntaxErrors.Error? error)
         {
             string[] tokens = line.Split(" ");
             List<Instruction> instructions = new List<Instruction>();
@@ -200,6 +239,7 @@ namespace OppoT2Assembler
             // Catch invalid instructions
             if (format == ISA.InstructionFormat.INVALID)
             {
+                error = SyntaxErrors.Error.InvalidToken;
                 listOfInstructions = null;
                 instructionCount = 0;
                 return false;
@@ -207,6 +247,7 @@ namespace OppoT2Assembler
 
             if (expectedTokenCount != tokens.Length)
             {
+                error = SyntaxErrors.Error.InvalidTokenCount;
                 listOfInstructions = null;
                 instructionCount = 0;
                 return false;
@@ -226,6 +267,7 @@ namespace OppoT2Assembler
                 // Generate reg A
                 if (!ISA.TryGetBinFromType(tokens[1], out uint moviRegA))
                 {
+                    error = SyntaxErrors.Error.InvalidToken;
                     listOfInstructions = null;
                     instructionCount = 0;
                     return false;
@@ -237,6 +279,7 @@ namespace OppoT2Assembler
 
                 // Determine if label, or hardcoded imm value.
                 if (ISA.TryGetBinFromType(tokens[2], out uint moviImm)) {
+                    error = null;
                     // Get imm values
                     uint luiImm = moviImm >> 17;
                     uint oriImm = moviImm & 0b00000000000000011111111111111111;
@@ -254,6 +297,7 @@ namespace OppoT2Assembler
                 // This is a label.
                 else
                 {
+                    error = null;
                     // Flag instruction as incomplete.
                     luiInstruction.HasSplitLabel = true;
                     oriInstruction.HasSplitLabel = true;
@@ -276,6 +320,7 @@ namespace OppoT2Assembler
             // Get Opcode
             if (!ISA.TryGetBinFromType(tokens[0], out uint opcode))
             {
+                error = SyntaxErrors.Error.InvalidToken;
                 instructions.Add(instruction);
                 listOfInstructions = instructions;
                 instructionCount = 0;
@@ -287,6 +332,7 @@ namespace OppoT2Assembler
             // Check for OP
             if (format == ISA.InstructionFormat.OP)
             {
+                error = null;
                 instructions.Add(instruction);
                 listOfInstructions = instructions;
                 return true;
@@ -295,6 +341,7 @@ namespace OppoT2Assembler
             // Get regA
             if (!ISA.TryGetBinFromType(tokens[1], out uint regA))
             {
+                error = SyntaxErrors.Error.InvalidToken;
                 instructions.Add(instruction);
                 listOfInstructions = instructions;
                 instructionCount = 0;
@@ -306,6 +353,7 @@ namespace OppoT2Assembler
             // Check for type R
             if (format == ISA.InstructionFormat.R)
             {
+                error = null;
                 instructions.Add(instruction);
                 listOfInstructions = instructions;
                 return true;
@@ -316,11 +364,14 @@ namespace OppoT2Assembler
             {
                 if (!ISA.TryGetBinFromType(tokens[2], out uint imm15))
                 {
+                    error = SyntaxErrors.Error.InvalidToken;
                     instructions.Add(instruction);
                     listOfInstructions = instructions;
                     instructionCount = 0;
                     return false;
                 }
+
+                error = null;
 
                 instruction.SetOperand(Instruction.Operand.Imm15, imm15);
                 instructions.Add(instruction);
@@ -331,6 +382,7 @@ namespace OppoT2Assembler
             // Get regB
             if (!ISA.TryGetBinFromType(tokens[2], out uint regB))
             {
+                error = SyntaxErrors.Error.InvalidToken;
                 instructions.Add(instruction);
                 listOfInstructions = instructions;
                 instructionCount = 0;
@@ -342,6 +394,7 @@ namespace OppoT2Assembler
             // Check for type RR
             if (format == ISA.InstructionFormat.RR)
             {
+                error = null;
                 instructions.Add(instruction);
                 listOfInstructions = instructions;
                 return true;
@@ -354,11 +407,14 @@ namespace OppoT2Assembler
             {
                 if (!ISA.TryGetBinFromType(tokens[3], out uint regC))
                 {
+                    error = SyntaxErrors.Error.InvalidToken;
                     instructions.Add(instruction);
                     listOfInstructions = instructions;
                     instructionCount = 0;
                     return false;
                 }
+
+                error = null;
 
                 instruction.SetOperand(Instruction.Operand.RegisterC, regC);
                 instructions.Add(instruction);
@@ -372,11 +428,15 @@ namespace OppoT2Assembler
             {
                 if (!ISA.TryGetBinFromType(tokens[3], out uint simm17))
                 {
+                    error = SyntaxErrors.Error.InvalidToken;
+
                     instructions.Add(instruction);
                     listOfInstructions = instructions;
                     instructionCount = 0;
                     return false;
                 }
+
+                error = null;
 
                 instruction.SetOperand(Instruction.Operand.Simm17, simm17);
                 instructions.Add(instruction);
@@ -390,6 +450,7 @@ namespace OppoT2Assembler
                 // Get Conditional
                 if (!ISA.TryGetBinFromType(tokens[3], out uint cond))
                 {
+                    error = SyntaxErrors.Error.InvalidToken;
                     instructions.Add(instruction);
                     listOfInstructions = instructions;
                     instructionCount = 0;
@@ -401,6 +462,9 @@ namespace OppoT2Assembler
                 // Check if imm or label
                 if (ISA.TryGetBinFromType(tokens[4], out uint simm13))
                 {
+
+                    error = null;
+
                     // Imm value
                     instruction.SetOperand(Instruction.Operand.Simm13, simm13);
                     instructions.Add(instruction);
@@ -409,6 +473,8 @@ namespace OppoT2Assembler
                 }
                 else
                 {
+                    error = null;
+
                     // Label
                     instruction.SetLabel(tokens[4]);
                     instructions.Add(instruction);
@@ -418,8 +484,8 @@ namespace OppoT2Assembler
 
             }
 
-            // We should never get here.
-
+            // We should never get here, but to satisfy C#, ¯\_(ツ)_/¯
+            error = SyntaxErrors.Error.InvalidInstruction;
             instructions.Add(instruction);
             listOfInstructions = instructions;
             instructionCount = 0;
