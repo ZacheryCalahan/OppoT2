@@ -2,7 +2,7 @@ OppoT2Assembler/.vs
 OppoT2Assembler/.vscode
 OppoT2Assembler/OppoT2Assembler/bin
 OppoT2Assembler/OppoT2Assembler/obj
-obj/
+out/
 extras/
 out/*
 Executables/
