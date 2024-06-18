@@ -45,8 +45,10 @@ namespace OppoT2Assembler.ISADefinitions
             Opcodes.Add("push", 12);
             Opcodes.Add("pop", 13);
             Opcodes.Add("lui", 14);
-            Opcodes.Add("isrr", 15);
+            Opcodes.Add("sira", 15);
             Opcodes.Add("ori", 17);
+            Opcodes.Add("csrw", 18);
+            Opcodes.Add("csrr", 19);
             // Psuedo
             Opcodes.Add("movi", 300);
 
@@ -114,8 +116,10 @@ namespace OppoT2Assembler.ISADefinitions
             OpcodeTokens.Add("push", 2);
             OpcodeTokens.Add("pop", 2);
             OpcodeTokens.Add("lui", 3);
-            OpcodeTokens.Add("isrr", 1);
+            OpcodeTokens.Add("sira", 2);
             OpcodeTokens.Add("ori", 4);
+            OpcodeTokens.Add("csrw", 2);
+            OpcodeTokens.Add("csrr", 2);
             // Psuedos
             OpcodeTokens.Add("movi", 3);
         }
@@ -180,10 +184,14 @@ namespace OppoT2Assembler.ISADefinitions
                     return InstructionFormat.R;
                 case 14:    // lui
                     return InstructionFormat.RI;
-                case 15:    // isrr
-                    return InstructionFormat.OP;
+                case 15:    // sira
+                    return InstructionFormat.R;
                 case 17:    // ori
                     return InstructionFormat.RRI;
+                case 18:    // csrw
+                    return InstructionFormat.R;
+                case 19:    // csrr
+                    return InstructionFormat.R;
                 case 300:
                     return InstructionFormat.RI;
                 default:

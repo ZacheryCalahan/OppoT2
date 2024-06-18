@@ -55,7 +55,7 @@
 			"patterns": [
 				{
 					"name": "keyword.operator",
-					"match": "\\b(addi|add|xor|shll|shlr|ori|neg|and|or|lw|sw|brc|jalr|push|pop|lui|isrr|int|movi)\\b"
+					"match": "\\b(addi|add|xor|shll|shlr|ori|neg|and|or|lw|sw|brc|jalr|push|pop|lui|sira|int|movi)\\b"
 				}
 			]
 		},

@@ -1,43 +1,26 @@
 # comment
 .entrypoint
     # loc 0
-    movi sp, 0xff # Initialize the stack pointer at location 
+    movi sp, 0xF00 # Initialize the stack pointer at location 
     movi r29, kernelMain # Load code location into a register
 
     jalr r0, r29    # Long jump to .code
 
 @org 0x1fff # Addr of the Interrupt Service Routine
 .intServiceRoutine
-    push t0
-    push t1
-    push t2
+    movi r27, 0x80000000 # Set CSR to disable ints
+    csrw r27
 
-    # Check for device ID
-    movi t0, 0x0f000000  # load value of keyboard id
-    movi t1, 0xff000000  # get device ID only
-    and t1, t1, t0
-    brc t1, t0, eq, onKeypress
-    brc r0, r0, eq, reset
+    sira ra # Save return location
 
-    .onKeypress
-        movi t0, 0xFFFFFFFE # load address of keyboard
-        movi t1, 0xFFFFFFFF # load address of TTY
-        lw t0, t2, 0 # load incoming key
-        # save to buffer
-        # inc buffer location
+    addi s3, r0, 0b11111111111111110
+    addi s4, r0, 0b11111111111111111
+    lw s5, s3, 0                    
+    sw s5, s4, 0                    
 
-                           
-        brc r0, r0, eq, isrFinished
-
-    .reset
-        jalr r0, r0
-        
-
-    .isrFinished
-        pop t2
-        pop t1
-        pop t0
-        isrr
+    # Enable ints again
+    csrw r0
+    jalr r0, ra
 
 @org 0x3000 # Start address of open memory
     @include C:\Users\zache\Documents\Coding\CPU\OppoT2\programs\OS\kernel\kernel.s
