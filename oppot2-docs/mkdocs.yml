@@ -1,5 +1,8 @@
 site_name: OppoT2 Documentation
 nav:
   - Home: index.md
-  - CPU: cpu/cpu.md
-  - ASM: asm/asm.md
+  - CPU:
+    - CPU Overview: cpu/index.md
+    - ISA Design: cpu/isa.md
+  - Assembler: 
+    - Assembler Overview: asm/index.md
