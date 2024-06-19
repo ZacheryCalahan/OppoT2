@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>ASM - OppoT2 Documentation</title>
+        <title>ISA Design - OppoT2 Documentation</title>
         <link href="../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../css/fontawesome.min.css" rel="stylesheet">
         <link href="../../css/brands.min.css" rel="stylesheet">
@@ -37,11 +37,27 @@
                             <li class="nav-item">
                                 <a href="../.." class="nav-link">Home</a>
                             </li>
-                            <li class="nav-item">
-                                <a href="../../cpu/cpu/" class="nav-link">CPU</a>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">CPU</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../" class="dropdown-item">CPU Overview</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">ISA Design</a>
+</li>
+                                </ul>
                             </li>
-                            <li class="nav-item">
-                                <a href="./" class="nav-link active" aria-current="page">ASM</a>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Assembler</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../asm/" class="dropdown-item">Assembler Overview</a>
+</li>
+                                </ul>
                             </li>
                         </ul>
 
@@ -52,12 +68,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../../cpu/cpu/" class="nav-link">
+                                <a rel="prev" href="../" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" class="nav-link disabled">
+                                <a rel="next" href="../../asm/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -79,7 +95,7 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#asm" class="nav-link">ASM</a>
+            <li class="nav-item" data-bs-level="1"><a href="#instructions" class="nav-link">Instructions</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -88,7 +104,202 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="asm">ASM</h1></div>
+<h1 id="instructions">Instructions</h1>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Instruction</th>
+<th>Syntax</th>
+<th>Type</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ALU</td>
+<td>ADD</td>
+<td>ADD rA, rB, rC</td>
+<td>RRR</td>
+<td>rA &lt;- rB + rC</td>
+</tr>
+<tr>
+<td></td>
+<td>ADDI</td>
+<td>ADDI rA, rB, simm17</td>
+<td>RRI</td>
+<td>rA &lt;- rB + simm17</td>
+</tr>
+<tr>
+<td></td>
+<td>OR</td>
+<td>OR rA, rB, rC</td>
+<td>RRR</td>
+<td>rA &lt;- rB | rC</td>
+</tr>
+<tr>
+<td></td>
+<td>XOR</td>
+<td>XOR rA, rB, rC</td>
+<td>RRR</td>
+<td>rA &lt;- rB ^ rC</td>
+</tr>
+<tr>
+<td></td>
+<td>SHLL</td>
+<td>SHLL rA, rB, rC</td>
+<td>RRR</td>
+<td>rA &lt;- rB &lt;&lt; rC</td>
+</tr>
+<tr>
+<td></td>
+<td>SHLR</td>
+<td>SHLR, rA, rB, rC</td>
+<td>RRR</td>
+<td>rA &lt;- rB &gt;&gt; rC</td>
+</tr>
+<tr>
+<td></td>
+<td>NEG</td>
+<td>NEG rA, rB</td>
+<td>RR</td>
+<td>rA &lt;- ~rB</td>
+</tr>
+<tr>
+<td></td>
+<td>AND</td>
+<td>AND rA, rB, rC</td>
+<td>RRR</td>
+<td>rA &lt;- rB &amp; rC</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>LW</td>
+<td>LW rA, rB, simm17</td>
+<td>RRI</td>
+<td>R[regA] &lt;- Mem[ R[regB] + immed ]</td>
+</tr>
+<tr>
+<td></td>
+<td>SW</td>
+<td>SW rA, rB, simm17</td>
+<td>RRI</td>
+<td>R[regA] -&gt; Mem[ R[regB] + immed ]</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Jumps</td>
+<td>BRC</td>
+<td>BRC rA, rB, COND, simm13</td>
+<td>RRCI</td>
+<td>if (rA compares rB) jmp</td>
+</tr>
+<tr>
+<td></td>
+<td>JALR</td>
+<td>JALR rA, rB</td>
+<td>RR</td>
+<td>rA &lt;- PC + 1 &amp;&amp; PC &lt;- rB</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Stack</td>
+<td>PUSH</td>
+<td>PUSH rA</td>
+<td>R</td>
+<td>stack &lt;- rA</td>
+</tr>
+<tr>
+<td></td>
+<td>POP</td>
+<td>POP rA</td>
+<td>R</td>
+<td>rA &lt;- stack</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Immediate</td>
+<td>LUI</td>
+<td>LUI rA, imm15</td>
+<td>RI</td>
+<td>rA &lt;- imm15 &lt;&lt; 17</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Interrupt</td>
+<td>SIRA</td>
+<td>SIRA rA</td>
+<td>RR</td>
+<td>rA &lt;- Int Return Address</td>
+</tr>
+<tr>
+<td></td>
+<td>INT?</td>
+<td>INT, rA, simm17</td>
+<td></td>
+<td>Trigger a software interrupt</td>
+</tr>
+<tr>
+<td></td>
+<td>ORI</td>
+<td>ORI, rA, rB, simm17</td>
+<td>RRI</td>
+<td>rA &lt;- rB | imm17</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Control Status</td>
+<td>CSRW</td>
+<td>CSRW rA</td>
+<td>R</td>
+<td>rA -&gt; CSR</td>
+</tr>
+<tr>
+<td></td>
+<td>CSRR</td>
+<td>CSRR rA</td>
+<td>R</td>
+<td>rA &lt;- CSR</td>
+</tr>
+</tbody>
+</table></div>
             </div>
         </div>
 

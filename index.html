@@ -37,11 +37,27 @@
                             <li class="nav-item">
                                 <a href="." class="nav-link active" aria-current="page">Home</a>
                             </li>
-                            <li class="nav-item">
-                                <a href="cpu/cpu/" class="nav-link">CPU</a>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">CPU</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="cpu/" class="dropdown-item">CPU Overview</a>
+</li>
+                                    
+<li>
+    <a href="cpu/isa/" class="dropdown-item">ISA Design</a>
+</li>
+                                </ul>
                             </li>
-                            <li class="nav-item">
-                                <a href="asm/asm/" class="nav-link">ASM</a>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Assembler</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="asm/" class="dropdown-item">Assembler Overview</a>
+</li>
+                                </ul>
                             </li>
                         </ul>
 
@@ -57,7 +73,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="cpu/cpu/" class="nav-link">
+                                <a rel="next" href="cpu/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -97,8 +113,10 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="welcome-to-oppot2">Welcome to <a href="https://github.com/ZacheryCalahan/OppoT2">OppoT2</a></h1>
-<h2 id="cpu-documentation">CPU Documentation</h2>
-<h2 id="assembler-documentation">Assembler Documentation</h2></div>
+<h2 id="cpu-documentation"><a href="cpu/">CPU Documentation</a></h2>
+<p>All documentation regarding the design and use of the CPU is kept here.</p>
+<h2 id="assembler-documentation"><a href="asm/">Assembler Documentation</a></h2>
+<p>All documentation regarding the design and use of the assembler is kept here.</p></div>
             </div>
         </div>
 
@@ -180,5 +198,5 @@
 
 <!--
 MkDocs version : 1.6.0
-Build Date UTC : 2024-06-18 07:58:37.763590+00:00
+Build Date UTC : 2024-06-19 00:04:31.302720+00:00
 -->
