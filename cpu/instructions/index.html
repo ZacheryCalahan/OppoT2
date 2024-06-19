@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Instructions - OppoT2 Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" disabled>
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/asm.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/c.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/c#.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">OppoT2 Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">CPU</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../" class="dropdown-item">CPU Overview</a>
+</li>
+                                    
+<li>
+    <a href="../isa/" class="dropdown-item">ISA Design</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Instructions</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Assembler</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../asm/" class="dropdown-item">Assembler Overview</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../isa/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../../asm/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                              <button id="theme-menu" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme" class="nav-link dropdown-toggle">
+                                <i class="fa-solid fa-circle-half-stroke fa-fw"></i>
+                                <span class="d-lg-none ms-2">Toggle theme</span>
+                              </button>
+                              <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+                                    <i class="fa-solid fa-sun fa-fw"></i>
+                                    <span class="ms-2">Light</span>
+                                    <i class="fa-solid fa-check ms-auto d-none"></i>
+                                  </button>
+                                </li>
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+                                    <i class="fa-solid fa-moon fa-fw"></i>
+                                    <span class="ms-2">Dark</span>
+                                    <i class="fa-solid fa-check ms-auto d-none"></i>
+                                  </button>
+                                </li>
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="true">
+                                    <i class="fa-solid fa-circle-half-stroke fa-fw"></i>
+                                    <span class="ms-2">Auto</span>
+                                    <i class="fa-solid fa-check ms-auto"></i>
+                                  </button>
+                                </li>
+                              </ul>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <script src="../../js/darkmode.js"></script>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#instruction-set-architecture" class="nav-link">Instruction Set Architecture</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#add" class="nav-link">ADD</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#addi" class="nav-link">ADDI</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#or" class="nav-link">OR</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#xor" class="nav-link">XOR</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#shll" class="nav-link">SHLL</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#shlr" class="nav-link">SHLR</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#neg" class="nav-link">NEG</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#and" class="nav-link">AND</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#lw" class="nav-link">LW</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#sw" class="nav-link">SW</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#brc" class="nav-link">BRC</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#jalr" class="nav-link">JALR</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#push" class="nav-link">PUSH</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#pop" class="nav-link">POP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#lui" class="nav-link">LUI</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#sira" class="nav-link">SIRA</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#int" class="nav-link">INT?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#ori" class="nav-link">ORI</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#csrw" class="nav-link">CSRW</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#csrr" class="nav-link">CSRR</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="instruction-set-architecture">Instruction Set Architecture</h1>
+<p>This is a list of all instructions that the CPU supports. Any instruction with the <code>?</code> suffix is not fully implemented into the CPU.</p>
+<p>Anytime <code>rA</code>, <code>rB</code>, or <code>rC</code> is seen indicates that a register is being used. <code>imm</code> signifies an immediate value.</p>
+<h1 id="add">ADD</h1>
+<p>Adds the two numbers stored in <code>rB</code> and <code>rC</code>, then store the resulting value in <code>rA</code>.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>ADD rA, rB, rC</code></p>
+<h3 id="instruction-data">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rB</code>, <code>rC</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RRR</td>
+</tr>
+</tbody>
+</table>
+<h1 id="addi">ADDI</h1>
+<p>Adds the number in <code>rB</code> with the <code>simm17</code>, then store the resulting value in <code>rA</code>.</p>
+<h3 id="syntax_1">Syntax</h3>
+<p><code>ADDI rA, rB, simm17</code></p>
+<h3 id="instruction-data_1">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rB</code>, <code>imm</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RRI</td>
+</tr>
+</tbody>
+</table>
+<h1 id="or">OR</h1>
+<p>Bitwise OR the number in <code>rB</code> and <code>rC</code>, then store the resulting value in <code>rA</code>.</p>
+<h3 id="syntax_2">Syntax</h3>
+<p><code>OR rA, rB, rC</code></p>
+<h3 id="instruction-data_2">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rB</code>, <code>rC</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RRR</td>
+</tr>
+</tbody>
+</table>
+<h1 id="xor">XOR</h1>
+<p>Bitwise XOR the number in <code>rB</code> and <code>rC</code>, then store the resulting value in <code>rA</code>.</p>
+<h3 id="syntax_3">Syntax</h3>
+<p><code>XOR rA, rB, rC</code></p>
+<h3 id="instruction-data_3">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rB</code>, <code>rC</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RRR</td>
+</tr>
+</tbody>
+</table>
+<h1 id="shll">SHLL</h1>
+<p>Shift the number in <code>rB</code> by the least significant bits in <code>rC</code> logically left, then store the resulting value in <code>rA</code>.</p>
+<h3 id="syntax_4">Syntax</h3>
+<p><code>SHLL rA, rB, rC</code></p>
+<h3 id="instruction-data_4">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rB</code>, <code>rC</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RRR</td>
+</tr>
+</tbody>
+</table>
+<h1 id="shlr">SHLR</h1>
+<p>Shift the number in <code>rB</code> by the least significant bits in <code>rC</code> logically right, then store the resulting value in <code>rA</code>.</p>
+<h3 id="syntax_5">Syntax</h3>
+<p><code>SHLR, rA, rB, rC</code></p>
+<h3 id="instruction-data_5">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rB</code>, <code>rC</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RRR</td>
+</tr>
+</tbody>
+</table>
+<h1 id="neg">NEG</h1>
+<p>Invert the bits in <code>rB</code>, then store the resulting value in <code>rA</code>.</p>
+<h3 id="syntax_6">Syntax</h3>
+<p><code>NEG rA, rB</code></p>
+<h3 id="instruction-data_6">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rB</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RR</td>
+</tr>
+</tbody>
+</table>
+<h1 id="and">AND</h1>
+<p>Bitwise AND the number in <code>rB</code> and <code>rC</code>, then store the resulting value in <code>rA</code>.</p>
+<h3 id="syntax_7">Syntax</h3>
+<p><code>AND rA, rB, rC</code></p>
+<h3 id="instruction-data_7">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rB</code>, <code>rC</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RRR</td>
+</tr>
+</tbody>
+</table>
+<h1 id="lw">LW</h1>
+<p>Load a word from memory by adding <code>rB</code> to the <code>simm17</code> to form the memory address, then store the value into <code>rA</code>.</p>
+<h3 id="syntax_8">Syntax</h3>
+<p><code>LW rA, rB, simm17</code></p>
+<h3 id="instruction-data_8">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rB</code>, <code>imm</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RRI</td>
+</tr>
+</tbody>
+</table>
+<h1 id="sw">SW</h1>
+<p>Store a word to memory by adding <code>rB</code> to the <code>simm17</code> to form the memory address, then store the value from <code>rA</code> into memory.</p>
+<h3 id="syntax_9">Syntax</h3>
+<p><code>SW rA, rB, simm17</code></p>
+<h3 id="instruction-data_9">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rB</code>, <code>imm</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RRI</td>
+</tr>
+</tbody>
+</table>
+<h1 id="brc">BRC</h1>
+<p>Check for a given condition, then jump to the address of the <code>simm13</code> if true.</p>
+<h3 id="syntax_10">Syntax</h3>
+<p><code>BRC rA, rB, COND, simm13</code></p>
+<h3 id="instruction-data_10">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rB</code>, <code>imm</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RRCI</td>
+</tr>
+</tbody>
+</table>
+<h3 id="conditions">Conditions</h3>
+<table>
+<thead>
+<tr>
+<th>Integer Value</th>
+<th>Conditions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>EQ</code></td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>!EQ</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>GT</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>GTE</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>LT</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>LTE</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>PASS</code></td>
+</tr>
+</tbody>
+</table>
+<p>The <code>PASS</code> Conditional is always true, and if chosen will always result in a jump.</p>
+<h1 id="jalr">JALR</h1>
+<p>Store the address of <code>Program Counter + 1</code> to <code>rA</code>, then jump to the address in <code>rB</code>.</p>
+<h3 id="syntax_11">Syntax</h3>
+<p><code>JALR rA, rB</code></p>
+<h3 id="instruction-data_11">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rB</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RR</td>
+</tr>
+</tbody>
+</table>
+<h1 id="push">PUSH</h1>
+<p>Push the value of <code>rA</code> to the stack.</p>
+<h3 id="syntax_12">Syntax</h3>
+<p><code>PUSH rA</code></p>
+<h3 id="instruction-data_12">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>sp</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>R</td>
+</tr>
+</tbody>
+</table>
+<h1 id="pop">POP</h1>
+<p>Pop the value of the stack to <code>rA</code>.</p>
+<h3 id="syntax_13">Syntax</h3>
+<p><code>POP rA</code></p>
+<h3 id="instruction-data_13">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>sp</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>R</td>
+</tr>
+</tbody>
+</table>
+<h1 id="lui">LUI</h1>
+<p>Store the value of <code>imm15</code> &lt;&lt; 17 to <code>rA</code>.</p>
+<h3 id="syntax_14">Syntax</h3>
+<p><code>LUI rA, imm15</code></p>
+<h3 id="instruction-data_14">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>imm</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RI</td>
+</tr>
+</tbody>
+</table>
+<h1 id="sira">SIRA</h1>
+<p>Upon entering an interrupt service routine, this instruction saves the return address to <code>rA</code>.</p>
+<h3 id="syntax_15">Syntax</h3>
+<p><code>SIRA rA</code></p>
+<h3 id="instruction-data_15">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td>Interrupt Return Address</td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>R</td>
+</tr>
+</tbody>
+</table>
+<p>Because interrupts can be chained together, this is a way to save the return address onto the stack. Some ISRs may not be capable of handling out of order input, and should be disabled with the <a href="./#csrw">CSRW</a> instruction.</p>
+<h1 id="int">INT?</h1>
+<p>Trigger a software interrupt.</p>
+<h3 id="syntax_16">Syntax</h3>
+<p><code>INT rA</code></p>
+<h3 id="instruction-data_16">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>7</td>
+</tr>
+<tr>
+<td>Source</td>
+<td></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>R</td>
+</tr>
+</tbody>
+</table>
+<p>Although this instruction is not supported quite yet, it will allow an interrupt to be triggered where <code>rA</code> is the value that the ISR will handle.</p>
+<h1 id="ori">ORI</h1>
+<p>Bitwise OR the number in <code>rB</code> with <code>simm17</code>, then store the resulting value in <code>rA</code>.</p>
+<h3 id="syntax_17">Syntax</h3>
+<p><code>ORI rA, rB, simm17</code></p>
+<h3 id="instruction-data_17">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rB</code>, <code>imm</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RRI</td>
+</tr>
+</tbody>
+</table>
+<h1 id="csrw">CSRW</h1>
+<p>Write the value in <code>rA</code> to the <code>Control Status Register</code></p>
+<h3 id="syntax_18">Syntax</h3>
+<p><code>CSRW rA</code></p>
+<h3 id="instruction-data_18">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>csr</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RRI</td>
+</tr>
+</tbody>
+</table>
+<h1 id="csrr">CSRR</h1>
+<p>Read the value in the <code>Control Status Register</code> and store in <code>rA</code></p>
+<h3 id="syntax_19">Syntax</h3>
+<p><code>CSRW rA</code></p>
+<h3 id="instruction-data_19">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>csr</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+<tr>
+<td>Instruction Format</td>
+<td>RRI</td>
+</tr>
+</tbody>
+</table></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
