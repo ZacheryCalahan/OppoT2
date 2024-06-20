@@ -52,6 +52,8 @@ Documentation is currently in the works, but will define the following:
 - Assembler usage
 - Ideal Memory Map
 
+The most current version of the documentation can be found [here](https://zacherycalahan.github.io/OppoT2/).
+
 
 ## Acknowledgements
 
