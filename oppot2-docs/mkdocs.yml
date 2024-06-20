@@ -1,7 +1,8 @@
 site_name: OppoT2 Documentation
-
 repo_url: https://github.com/ZacheryCalahan/OppoT2
 repo_name: ZacheryCalahan/OppoT2
+site_url: https://zacherycalahan.github.io/OppoT2/
+
 nav:
   - Home: index.md
   - CPU:
@@ -18,6 +19,11 @@ theme:
     scheme: slate
   icon:
     repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.sections
+
 
 markdown_extensions:
   - admonition

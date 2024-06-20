@@ -2,19 +2,19 @@
 
 This CPU has been designed to used in various different ways, but the conventions will allow developers to keep track of the CPU state.
 
-# Registers
+## Registers
 
 The registers are of a similar design to the RISC-V processor, but are organized differently. The names of the registers should be used to refer to a register within the assembler, but the assembler can also accept the register's integer representation. 
 
 The registers that the CPU keeps track of are in two different groups, the general purpose registers and the special registers. 
 
-## General Purpose Registers
+### General Purpose Registers
 
 These registers can be used in any instruction that handles registers specifically. Each register's use is only by convention, and other than `r0` are not handled by the CPU in any special way. 
 
-??? warning "<b>Warning</b>: Using Integers for Registers"
+!!! warning "Register Safety"
 
-    A developer can write a return address of a subroutine to the stack pointer without issue from the CPU if that is <i>really</i> what the developer wants. It is heavily recommended that a user uses the register names.
+    A developer can write a return address of a subroutine to the stack pointer without issue from the CPU if that is <i>really</i> what the developer wants. It is heavily recommended that a user uses the register names to avoid such bugs.
 
 | Register Integer | Register Name           | Usage                | Saved by calle- |
 | ---------------- | ----------------------- | -------------------- | --------------- |
@@ -60,3 +60,24 @@ Some registers do not live within the Register File, and are only accessable thr
 | `pc`          | Program Counter      | Yes [BRC](../cpu/instructions.md#brc)         |
 | `csr`         | Return Address       | Yes [CSRW](../cpu/instructions.md#csrw)       |
 | `iret`        | Return Address       | Read-Only [SIRA](../cpu/instructions.md#sira) |
+
+## Memory
+
+Generally the memory map can be entirely chosen by the developer, but a few memory locations are hardcoded. These exceptions are listed below.
+
+| Memory Location | Use                              | Description 
+| --------------- | -------------------------------- | ----------------------------------------------------------- | 
+| 0x00000000      | Boot Location                    | Location CPU starts execution at.                           |
+| 0x00002FFF      | Interrupt Service Routine Vector | Location of where CPU jumps to when an interrupt is raised. |
+
+Because the boot code could possibly be larger than 12287 words, the start of the ISR vector, it is recommended that a memory address is jumped to directly after gaining control of the CPU. Example (Kernel location 0x00004fff):
+
+```
+    movi r29, 0x00004ffff   # Load kernel location
+    jalr r0, r29            # Long Jump to kernel
+```
+
+!!! note
+    [MOVI](../cpu/instructions.md#movi) is a psuedo-op, and uses two instructions to load a 32-bit value into a register.
+
+This is an example of the maximum needed words to jump to any location in memory, which requires 3 words. Since there are 12287 words before the start of the next reserved location in memory, this area is suitable for BIOS style ROM as well.
