@@ -1,4 +1,3 @@
-
 # OppoT2
 
 OppoT2 is a RISC CPU designed under the Von Neumann architecture. The CPU is a 32-bit sequential design with stack and simple interrupt support. This repository contains a syntax highlighter for [VSCode](https://code.visualstudio.com/), an assembler for the CPU, the [Logisim Evolution](https://github.com/logisim-evolution/logisim-evolution) file that contains my implementation of the CPU, and various programs designed to run on the processor.
@@ -17,11 +16,29 @@ OppoT2 is a RISC CPU designed under the Von Neumann architecture. The CPU is a 3
 - Multifile Inclusion
 
 
+## TODO
+
+- Pipelined CPU design
+- CPU emulator
+- <i>VERY</i> simple C compiler
+
 ## Installation
 
 Run ```git clone https://github.com/ZacheryCalahan/OppoT2.git``` to get a local copy of the repository for the full source, or download the latest release from Github.
 
     
+## Documentation
+
+Documentation is currently in the works, but will define the following:
+
+- ISA
+- Psuedo-operands
+- Assembler usage
+- Ideal Memory Map
+
+The most current version of the documentation can be found [here](https://zacherycalahan.github.io/OppoT2/).
+
+
 ## Usage
 
 ### CPU
@@ -39,20 +56,6 @@ This outputs a text file that contains hex that can be entered into the RAM modu
 
 ### Syntax Highlighter
 Install the .vsix extention into VSCode, and select the OppoT2 language in your editor.
-
-
-
-
-## Documentation
-
-Documentation is currently in the works, but will define the following:
-
-- ISA
-- Psuedo-operands
-- Assembler usage
-- Ideal Memory Map
-
-The most current version of the documentation can be found [here](https://zacherycalahan.github.io/OppoT2/).
 
 
 ## Acknowledgements

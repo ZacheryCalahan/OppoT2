@@ -1,7 +1,7 @@
 # Instruction Set Architecture
 This is a list of all instructions that the CPU supports. Any instruction with the `?` suffix is not fully implemented into the CPU.
 
-Anytime `rA`, `rB`, or `rC` is seen indicates that a register is being used. `imm` signifies an immediate value.
+Anytime `rA`, `rB`, or `rC` is seen indicates that a register is being used. `imm` signifies an immediate value, with the number following `imm` signifying the bit width.
 
 
 # ADD
@@ -271,8 +271,8 @@ Upon entering an interrupt service routine, this instruction saves the return ad
 
 Because interrupts can be chained together, this is a way to save the return address onto the stack. Some ISRs may not be capable of handling out of order input, and should be disabled with the [CSRW](instructions.md#csrw) instruction.
 
-# INT?
-Trigger a software interrupt.
+# INT
+Trigger a software interrupt. (Not yet implemented into the CPU.)
 
 ### Syntax
 `INT rA`
