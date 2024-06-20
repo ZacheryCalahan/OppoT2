@@ -8,6 +8,8 @@
       
       
       
+        <link rel="canonical" href="https://zacherycalahan.github.io/OppoT2/cpu/instructions/">
+      
       
         <link rel="prev" href="../isa/">
       
@@ -70,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#instruction-set-architecture" class="md-skip">
+        <a href="#opcodes" class="md-skip">
           Skip to content
         </a>
       
@@ -247,15 +249,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -331,6 +338,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Instructions
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -340,6 +358,736 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#add" class="md-nav__link">
+    <span class="md-ellipsis">
+      ADD
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ADD">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#addi" class="md-nav__link">
+    <span class="md-ellipsis">
+      ADDI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ADDI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#or" class="md-nav__link">
+    <span class="md-ellipsis">
+      OR
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#xor" class="md-nav__link">
+    <span class="md-ellipsis">
+      XOR
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="XOR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shll" class="md-nav__link">
+    <span class="md-ellipsis">
+      SHLL
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SHLL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shlr" class="md-nav__link">
+    <span class="md-ellipsis">
+      SHLR
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SHLR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#neg" class="md-nav__link">
+    <span class="md-ellipsis">
+      NEG
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NEG">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#and" class="md-nav__link">
+    <span class="md-ellipsis">
+      AND
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AND">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lw" class="md-nav__link">
+    <span class="md-ellipsis">
+      LW
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LW">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sw" class="md-nav__link">
+    <span class="md-ellipsis">
+      SW
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SW">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brc" class="md-nav__link">
+    <span class="md-ellipsis">
+      BRC
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BRC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conditions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jalr" class="md-nav__link">
+    <span class="md-ellipsis">
+      JALR
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="JALR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#push" class="md-nav__link">
+    <span class="md-ellipsis">
+      PUSH
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PUSH">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pop" class="md-nav__link">
+    <span class="md-ellipsis">
+      POP
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="POP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lui" class="md-nav__link">
+    <span class="md-ellipsis">
+      LUI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LUI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sira" class="md-nav__link">
+    <span class="md-ellipsis">
+      SIRA
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SIRA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#int" class="md-nav__link">
+    <span class="md-ellipsis">
+      INT
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="INT">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ori" class="md-nav__link">
+    <span class="md-ellipsis">
+      ORI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ORI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#csrw" class="md-nav__link">
+    <span class="md-ellipsis">
+      CSRW
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CSRW">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#csrr" class="md-nav__link">
+    <span class="md-ellipsis">
+      CSRR
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CSRR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#psuedo-opcodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Psuedo Opcodes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#movi" class="md-nav__link">
+    <span class="md-ellipsis">
+      MOVI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MOVI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -383,15 +1131,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -457,6 +1210,725 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#add" class="md-nav__link">
+    <span class="md-ellipsis">
+      ADD
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ADD">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#addi" class="md-nav__link">
+    <span class="md-ellipsis">
+      ADDI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ADDI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#or" class="md-nav__link">
+    <span class="md-ellipsis">
+      OR
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#xor" class="md-nav__link">
+    <span class="md-ellipsis">
+      XOR
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="XOR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shll" class="md-nav__link">
+    <span class="md-ellipsis">
+      SHLL
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SHLL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shlr" class="md-nav__link">
+    <span class="md-ellipsis">
+      SHLR
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SHLR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#neg" class="md-nav__link">
+    <span class="md-ellipsis">
+      NEG
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NEG">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#and" class="md-nav__link">
+    <span class="md-ellipsis">
+      AND
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AND">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lw" class="md-nav__link">
+    <span class="md-ellipsis">
+      LW
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LW">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sw" class="md-nav__link">
+    <span class="md-ellipsis">
+      SW
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SW">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brc" class="md-nav__link">
+    <span class="md-ellipsis">
+      BRC
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BRC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conditions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jalr" class="md-nav__link">
+    <span class="md-ellipsis">
+      JALR
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="JALR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#push" class="md-nav__link">
+    <span class="md-ellipsis">
+      PUSH
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PUSH">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pop" class="md-nav__link">
+    <span class="md-ellipsis">
+      POP
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="POP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lui" class="md-nav__link">
+    <span class="md-ellipsis">
+      LUI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LUI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sira" class="md-nav__link">
+    <span class="md-ellipsis">
+      SIRA
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SIRA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#int" class="md-nav__link">
+    <span class="md-ellipsis">
+      INT
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="INT">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ori" class="md-nav__link">
+    <span class="md-ellipsis">
+      ORI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ORI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#csrw" class="md-nav__link">
+    <span class="md-ellipsis">
+      CSRW
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CSRW">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#csrr" class="md-nav__link">
+    <span class="md-ellipsis">
+      CSRR
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CSRR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#psuedo-opcodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Psuedo Opcodes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#movi" class="md-nav__link">
+    <span class="md-ellipsis">
+      MOVI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MOVI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instruction-data_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instruction Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -473,10 +1945,10 @@
   
 
 
-<h1 id="instruction-set-architecture">Instruction Set Architecture</h1>
+<h1 id="opcodes">Opcodes</h1>
 <p>This is a list of all instructions that the CPU supports. Any instruction with the <code>?</code> suffix is not fully implemented into the CPU.</p>
 <p>Anytime <code>rA</code>, <code>rB</code>, or <code>rC</code> is seen indicates that a register is being used. <code>imm</code> signifies an immediate value, with the number following <code>imm</code> signifying the bit width.</p>
-<h1 id="add">ADD</h1>
+<h2 id="add">ADD</h2>
 <p>Adds the two numbers stored in <code>rB</code> and <code>rC</code>, then store the resulting value in <code>rA</code>.</p>
 <h3 id="syntax">Syntax</h3>
 <p><code>ADD rA, rB, rC</code></p>
@@ -507,7 +1979,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="addi">ADDI</h1>
+<h2 id="addi">ADDI</h2>
 <p>Adds the number in <code>rB</code> with the <code>simm17</code>, then store the resulting value in <code>rA</code>.</p>
 <h3 id="syntax_1">Syntax</h3>
 <p><code>ADDI rA, rB, simm17</code></p>
@@ -538,7 +2010,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="or">OR</h1>
+<h2 id="or">OR</h2>
 <p>Bitwise OR the number in <code>rB</code> and <code>rC</code>, then store the resulting value in <code>rA</code>.</p>
 <h3 id="syntax_2">Syntax</h3>
 <p><code>OR rA, rB, rC</code></p>
@@ -569,7 +2041,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="xor">XOR</h1>
+<h2 id="xor">XOR</h2>
 <p>Bitwise XOR the number in <code>rB</code> and <code>rC</code>, then store the resulting value in <code>rA</code>.</p>
 <h3 id="syntax_3">Syntax</h3>
 <p><code>XOR rA, rB, rC</code></p>
@@ -600,7 +2072,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="shll">SHLL</h1>
+<h2 id="shll">SHLL</h2>
 <p>Shift the number in <code>rB</code> by the least significant bits in <code>rC</code> logically left, then store the resulting value in <code>rA</code>.</p>
 <h3 id="syntax_4">Syntax</h3>
 <p><code>SHLL rA, rB, rC</code></p>
@@ -631,7 +2103,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="shlr">SHLR</h1>
+<h2 id="shlr">SHLR</h2>
 <p>Shift the number in <code>rB</code> by the least significant bits in <code>rC</code> logically right, then store the resulting value in <code>rA</code>.</p>
 <h3 id="syntax_5">Syntax</h3>
 <p><code>SHLR, rA, rB, rC</code></p>
@@ -662,7 +2134,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="neg">NEG</h1>
+<h2 id="neg">NEG</h2>
 <p>Invert the bits in <code>rB</code>, then store the resulting value in <code>rA</code>.</p>
 <h3 id="syntax_6">Syntax</h3>
 <p><code>NEG rA, rB</code></p>
@@ -693,7 +2165,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="and">AND</h1>
+<h2 id="and">AND</h2>
 <p>Bitwise AND the number in <code>rB</code> and <code>rC</code>, then store the resulting value in <code>rA</code>.</p>
 <h3 id="syntax_7">Syntax</h3>
 <p><code>AND rA, rB, rC</code></p>
@@ -724,7 +2196,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="lw">LW</h1>
+<h2 id="lw">LW</h2>
 <p>Load a word from memory by adding <code>rB</code> to the <code>simm17</code> to form the memory address, then store the value into <code>rA</code>.</p>
 <h3 id="syntax_8">Syntax</h3>
 <p><code>LW rA, rB, simm17</code></p>
@@ -755,7 +2227,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="sw">SW</h1>
+<h2 id="sw">SW</h2>
 <p>Store a word to memory by adding <code>rB</code> to the <code>simm17</code> to form the memory address, then store the value from <code>rA</code> into memory.</p>
 <h3 id="syntax_9">Syntax</h3>
 <p><code>SW rA, rB, simm17</code></p>
@@ -786,7 +2258,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="brc">BRC</h1>
+<h2 id="brc">BRC</h2>
 <p>Check for a given condition, then jump to the address of the <code>simm13</code> if true.</p>
 <h3 id="syntax_10">Syntax</h3>
 <p><code>BRC rA, rB, COND, simm13</code></p>
@@ -857,7 +2329,7 @@
 </tbody>
 </table>
 <p>The <code>PASS</code> Conditional is always true, and if chosen will always result in a jump.</p>
-<h1 id="jalr">JALR</h1>
+<h2 id="jalr">JALR</h2>
 <p>Store the address of <code>Program Counter + 1</code> to <code>rA</code>, then jump to the address in <code>rB</code>.</p>
 <h3 id="syntax_11">Syntax</h3>
 <p><code>JALR rA, rB</code></p>
@@ -888,7 +2360,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="push">PUSH</h1>
+<h2 id="push">PUSH</h2>
 <p>Push the value of <code>rA</code> to the stack.</p>
 <h3 id="syntax_12">Syntax</h3>
 <p><code>PUSH rA</code></p>
@@ -919,7 +2391,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="pop">POP</h1>
+<h2 id="pop">POP</h2>
 <p>Pop the value of the stack to <code>rA</code>.</p>
 <h3 id="syntax_13">Syntax</h3>
 <p><code>POP rA</code></p>
@@ -950,7 +2422,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="lui">LUI</h1>
+<h2 id="lui">LUI</h2>
 <p>Store the value of <code>imm15</code> &lt;&lt; 17 to <code>rA</code>.</p>
 <h3 id="syntax_14">Syntax</h3>
 <p><code>LUI rA, imm15</code></p>
@@ -981,7 +2453,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="sira">SIRA</h1>
+<h2 id="sira">SIRA</h2>
 <p>Upon entering an interrupt service routine, this instruction saves the return address to <code>rA</code>.</p>
 <h3 id="syntax_15">Syntax</h3>
 <p><code>SIRA rA</code></p>
@@ -1013,7 +2485,7 @@
 </tbody>
 </table>
 <p>Because interrupts can be chained together, this is a way to save the return address onto the stack. Some ISRs may not be capable of handling out of order input, and should be disabled with the <a href="./#csrw">CSRW</a> instruction.</p>
-<h1 id="int">INT</h1>
+<h2 id="int">INT</h2>
 <p>Trigger a software interrupt. (Not yet implemented into the CPU.)</p>
 <h3 id="syntax_16">Syntax</h3>
 <p><code>INT rA</code></p>
@@ -1045,7 +2517,7 @@
 </tbody>
 </table>
 <p>Although this instruction is not supported quite yet, it will allow an interrupt to be triggered where <code>rA</code> is the value that the ISR will handle.</p>
-<h1 id="ori">ORI</h1>
+<h2 id="ori">ORI</h2>
 <p>Bitwise OR the number in <code>rB</code> with <code>simm17</code>, then store the resulting value in <code>rA</code>.</p>
 <h3 id="syntax_17">Syntax</h3>
 <p><code>ORI rA, rB, simm17</code></p>
@@ -1076,7 +2548,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="csrw">CSRW</h1>
+<h2 id="csrw">CSRW</h2>
 <p>Write the value in <code>rA</code> to the <code>Control Status Register</code></p>
 <h3 id="syntax_18">Syntax</h3>
 <p><code>CSRW rA</code></p>
@@ -1107,7 +2579,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="csrr">CSRR</h1>
+<h2 id="csrr">CSRR</h2>
 <p>Read the value in the <code>Control Status Register</code> and store in <code>rA</code></p>
 <h3 id="syntax_19">Syntax</h3>
 <p><code>CSRW rA</code></p>
@@ -1138,6 +2610,39 @@
 </tr>
 </tbody>
 </table>
+<h2 id="psuedo-opcodes">Psuedo Opcodes</h2>
+<p>The assembler supports extra psuedo opcodes, which simplify code writing. These are combinations of other instructions.</p>
+<h2 id="movi">MOVI</h2>
+<p>Move a 32-bit immediate value to a register.</p>
+<h3 id="syntax_20">Syntax</h3>
+<p><code>MOVI rA, imm32</code></p>
+<h3 id="instruction-data_20">Instruction Data</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clock Cycles</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>imm32</code></td>
+</tr>
+<tr>
+<td>Destination</td>
+<td><code>rA</code></td>
+</tr>
+</tbody>
+</table>
+<p>This uses the <a href="#ori"><code>ori</code></a> and <a href="#lui"><code>lui</code></a> opcodes to move a value in two instructions.</p>
+<div class="highlight"><pre><span></span><code>    lui rA, (imm32 &amp; 0xFFFE0000)
+    ori rA, (imm32 &amp; 0x0001FFFF)
+</code></pre></div>
 
 
 
@@ -1183,8 +2688,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.sections"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.ad660dcc.min.js"></script>

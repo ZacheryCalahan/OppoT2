@@ -8,6 +8,8 @@
       
       
       
+        <link rel="canonical" href="https://zacherycalahan.github.io/OppoT2/cpu/conventions/">
+      
       
         <link rel="prev" href="../instructions/">
       
@@ -247,15 +249,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -352,6 +359,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Conventions
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -361,6 +379,67 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Registers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Registers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#general-purpose-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      General Purpose Registers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#special-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Special Registers
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Memory
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -383,15 +462,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -457,6 +541,56 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Registers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Registers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#general-purpose-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      General Purpose Registers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#special-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Special Registers
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Memory
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -475,15 +609,15 @@
 
 <h1 id="cpu-conventions">CPU Conventions</h1>
 <p>This CPU has been designed to used in various different ways, but the conventions will allow developers to keep track of the CPU state.</p>
-<h1 id="registers">Registers</h1>
+<h2 id="registers">Registers</h2>
 <p>The registers are of a similar design to the RISC-V processor, but are organized differently. The names of the registers should be used to refer to a register within the assembler, but the assembler can also accept the register's integer representation. </p>
 <p>The registers that the CPU keeps track of are in two different groups, the general purpose registers and the special registers. </p>
-<h2 id="general-purpose-registers">General Purpose Registers</h2>
+<h3 id="general-purpose-registers">General Purpose Registers</h3>
 <p>These registers can be used in any instruction that handles registers specifically. Each register's use is only by convention, and other than <code>r0</code> are not handled by the CPU in any special way. </p>
-<details class="warning">
-<summary><b>Warning</b>: Using Integers for Registers</summary>
-<p>A developer can write a return address of a subroutine to the stack pointer without issue from the CPU if that is <i>really</i> what the developer wants. It is heavily recommended that a user uses the register names.</p>
-</details>
+<div class="admonition warning">
+<p class="admonition-title">Register Safety</p>
+<p>A developer can write a return address of a subroutine to the stack pointer without issue from the CPU if that is <i>really</i> what the developer wants. It is heavily recommended that a user uses the register names to avoid such bugs.</p>
+</div>
 <table>
 <thead>
 <tr>
@@ -716,6 +850,38 @@
 </tr>
 </tbody>
 </table>
+<h2 id="memory">Memory</h2>
+<p>Generally the memory map can be entirely chosen by the developer, but a few memory locations are hardcoded. These exceptions are listed below.</p>
+<table>
+<thead>
+<tr>
+<th>Memory Location</th>
+<th>Use</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x00000000</td>
+<td>Boot Location</td>
+<td>Location CPU starts execution at.</td>
+</tr>
+<tr>
+<td>0x00002FFF</td>
+<td>Interrupt Service Routine Vector</td>
+<td>Location of where CPU jumps to when an interrupt is raised.</td>
+</tr>
+</tbody>
+</table>
+<p>Because the boot code could possibly be larger than 12287 words, the start of the ISR vector, it is recommended that a memory address is jumped to directly after gaining control of the CPU. Example (Kernel location 0x00004fff):</p>
+<div class="highlight"><pre><span></span><code>    movi r29, 0x00004ffff   # Load kernel location
+    jalr r0, r29            # Long Jump to kernel
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a href="../instructions/#movi">MOVI</a> is a psuedo-op, and uses two instructions to load a 32-bit value into a register.</p>
+</div>
+<p>This is an example of the maximum needed words to jump to any location in memory, which requires 3 words. Since there are 12287 words before the start of the next reserved location in memory, this area is suitable for BIOS style ROM as well.</p>
 
 
 
@@ -761,8 +927,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.sections"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.ad660dcc.min.js"></script>
