@@ -12,6 +12,22 @@ nav:
     - Conventions: cpu/conventions.md
   - Assembler: 
     - Assembler Overview: asm/index.md
+  - Tutorials:
+    - Overview: tutorial/index.md
+    - Understanding The CPU:
+      - tutorial/00_intro/starthere.md
+      - tutorial/00_intro/Building_Blocks.md
+      - tutorial/00_intro/CPU_Components.md
+      - tutorial/00_intro/ISA_Explained.md
+    - The ALU:
+      - tutorial/01_alu/aluoverview.md
+    - The Register File:
+      - tutorial/02_registers/regoverview.md
+    - The Control Unit:
+      - tutorial/03_control/controloverview.md
+    - Memory:
+      - tutorial/04_memory/memoryoverview.md
+
 
 theme:
   name: material
@@ -24,10 +40,7 @@ theme:
     - navigation.instant.progress
     - navigation.sections
 
-
 markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
-
-  

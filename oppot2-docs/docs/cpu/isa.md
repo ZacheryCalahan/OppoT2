@@ -1,5 +1,7 @@
 # Instruction Set Overview
 
+This document gives an overview of the syntax and function of the available instructions that the CPU can execute. Below are links to each instructions description.
+
 | Type           | Instruction                                   | Syntax                   | Type | Function                          |
 | -------------- | --------------------------------------------- | ------------------------ | ---- | --------------------------------- |
 | ALU            | [ADD](../cpu/instructions.md#add)             | ADD rA, rB, rC           | RRR  | rA <- rB + rC                     |
@@ -23,8 +25,10 @@
 | Immediate      | [LUI](../cpu/instructions.md#lui)             | LUI rA, imm15            | RI   | rA <- imm15 << 17                 |
 |                |                                               |                          |      |                                   |
 | Interrupt      | [SIRA](../cpu/instructions.md#sira)           | SIRA rA                  | RR   | rA <- Int Return Address          |
-|                | [INT?](../cpu/instructions.md#int)           | INT, rA, simm17          |      | Trigger a software interrupt      |
+|                | [INT?](../cpu/instructions.md#int)            | INT, rA, simm17          |      | Trigger a software interrupt      |
 |                | [ORI](../cpu/instructions.md#ori)             | ORI, rA, rB, simm17      | RRI  | rA <- rB \| imm17                 |
 |                |                                               |                          |      |                                   |
 | Control Status | [CSRW](../cpu/instructions.md#csrw)           | CSRW rA                  | R    | rA -> CSR                         |
 |                | [CSRR](../cpu/instructions.md#csrr)           | CSRR rA                  | R    | rA <- CSR                         |
+| <i>Pseudo-ops  |                                               |                          |      |                                   |
+| Immediates     | [MOVI](../cpu/instructions.md#movi)           | MOVI rA, imm32           | n/a  | rA <- imm32                       |

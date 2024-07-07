@@ -1,0 +1,3 @@
+C:/Users/zache/Documents/Coding/CPU/OppoT2/OppoT2Emulator/cmake-build-debug/CMakeFiles/OppoT2Emulator.dir
+C:/Users/zache/Documents/Coding/CPU/OppoT2/OppoT2Emulator/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/zache/Documents/Coding/CPU/OppoT2/OppoT2Emulator/cmake-build-debug/CMakeFiles/rebuild_cache.dir

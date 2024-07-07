@@ -14,18 +14,21 @@ class Program
 
         uint[] assembledFile = Assembler.AssembleFile(fileRead);
 
-        WriteHexFile(assembledFile, fileWrite);
+        WriteBinFile(assembledFile, fileWrite);
     }
 
     public static void WriteBinFile(uint[] assembledFile, string path)
     {
-        using (var stream = File.Open(path, FileMode.OpenOrCreate))
+        using (var stream = File.Open(path, FileMode.Create))
         {
             using (var writer = new BinaryWriter(stream))
             {
                 foreach (uint dword in assembledFile)
                 {
-                    writer.Write(dword);
+                    byte[] bytes = BitConverter.GetBytes(dword);
+                    Array.Reverse(bytes, 0, bytes.Length);
+                    UInt32 word = BitConverter.ToUInt32(bytes);
+                    writer.Write(word);
                     // Writes in little-endian.
                 }
             }
