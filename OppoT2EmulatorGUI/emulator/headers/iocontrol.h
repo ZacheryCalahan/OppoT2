@@ -1,8 +1,5 @@
-//
-// Created by zache on 7/18/2024.
-//
+#pragma once
+#include <stdint.h>
 
-#ifndef IOCONTROL_H
-#define IOCONTROL_H
-
-#endif //IOCONTROL_H
+// Emulate the data flow of a controller receiving a packet of data.
+void input_peripheral_controller(uint8_t port, uint32_t data);

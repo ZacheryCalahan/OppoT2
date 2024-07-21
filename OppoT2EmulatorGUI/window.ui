@@ -1,17 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <interface>
-    <template class="MainWindow" parent="GtkApplicationWindow">
-        <property name="title" translatable="yes">Emulator</property>
-        <property name="default-width">600</property>
-        <property name="default-height">400</property>
+    <object class="GtkWindow" id="window">
+        <property name="can-focus">True</property>
         <child>
-            <object class="GtkBox" id="content_box">
-                <property name="orientation">vertical</property>
+            <object class="GtkFixed" id="fixed1">
+                <property name="width-request">840</property>
+                <property name="height-request">800</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
                 <child>
-                    <object class="GtkStack" id="stack" />
+                    <object class="GtkTextView" id="tty_output_box">
+                        <property name="width-request">800</property>
+                        <property name="height-request">650</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkToggleButton" id="clk_toggle">
+                        <property name="label">Clock Auto Propagate</property>
+                        <property name="width-request">40</property>
+                        <property name="height-request">40</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="margin-start">900</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkButton" id="clk_step">
+                        <property name="label">Step Clock</property>
+                        <property name="width-request">40</property>
+                        <property name="height-request">40</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="margin-start">900</property>
+                        <property name="margin-top">60</property>
+                    </object>
                 </child>
             </object>
         </child>
-    </template>
+    </object>
 </interface>

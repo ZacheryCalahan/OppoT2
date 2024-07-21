@@ -2,6 +2,7 @@
 #define EMULATOR_H
 
 #include <stdint.h>
+#include <stdio.h>
 struct CPU_STATE {
     // Program Counter
     uint32_t pc;
@@ -9,9 +10,17 @@ struct CPU_STATE {
 
     // Registers
     uint32_t regFile[32];
-    uint32_t csr;
 
+    // Control Registers
+    uint32_t csr;
+    uint32_t interrupt_source_register;
+
+    // External Control Lines
+    int irq;
 };
+
+#define DEBUG TRUE
+
 #endif
 
 
@@ -23,9 +32,6 @@ void emulate_cycle(void);
 
 // Read a binary stream to Memory
 void read_bin_to_memory(FILE *fptr);
-
-// Emulate an Interrupt
-void handle_interrupts(uint32_t , uint32_t data);
 
 // Write to Memory
 void writeMem(uint32_t address, uint32_t data);
