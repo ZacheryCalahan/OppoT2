@@ -2,42 +2,741 @@
 <interface>
     <object class="GtkWindow" id="window">
         <property name="can-focus">True</property>
-        <child>
-            <object class="GtkFixed" id="fixed1">
-                <property name="width-request">840</property>
-                <property name="height-request">800</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <child>
-                    <object class="GtkTextView" id="tty_output_box">
-                        <property name="width-request">800</property>
-                        <property name="height-request">650</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
+        <property name="title">OppoT2 Emulator</property>
+        <property name="default-width">1280</property>
+        <property name="default-height">720</property>
+
+        <property name="child">
+            <object class="GtkPaned">
+                <property name="name">windowBackground</property>
+                <property name="position">960</property>
+                <property name="wide-handle">True</property>
+
+                <!-- Container of serial, clock buttons, and the pixel buffer. -->
+                <property name="start-child">
+                    <object class="GtkBox" id="left_box">
+                        <property name="name">paneBackground</property>
+                        <property name="margin-start">5</property>
+                        <property name="margin-top">5</property>
+                        <property name="margin-end">5</property>
+                        <property name="margin-bottom">5</property>
+                        <property name="spacing">10</property>
+                        <property name="orientation">vertical</property>
+
+                        <!-- Pixel Buffer Box -->
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label">Pixel Buffer</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkFrame" id="pixel_buffer_frame">
+                                <property name="name">widgetBackground</property>
+                                <property name="height-request">448</property>
+                            </object>
+                        </child>
+
+                        <!-- Serial Output Box -->
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label">Serial Output</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkTextView" id="serial_output">
+                                <property name="name">widgetBackground</property>
+                                <property name="height-request">128</property>
+                            </object>
+                        </child>
+
+                        <!-- Computer Management Box -->
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label">CPU Debug Functions</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkBox" id="button_box">
+                                <property name="orientation">horizontal</property>
+                                <property name="name">widgetBackground</property>
+                                <property name="spacing">10</property>
+
+                                <!-- Clock Step Button -->
+                                <child>
+                                    <object class="GtkButton" id="clock_step_button">
+                                        <property name="margin-top">5</property>
+                                        <property name="margin-bottom">5</property>
+                                        <property name="label">Step Clock</property>
+                                    </object>
+                                </child>
+
+                                <!-- Clock Auto Propagate Button -->
+                                <child>
+                                    <object class="GtkToggleButton" id="clock_prop_button">
+                                        <property name="margin-top">5</property>
+                                        <property name="margin-bottom">5</property>
+                                        <property name="label">Auto Prop Clock</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
                     </object>
-                </child>
-                <child>
-                    <object class="GtkToggleButton" id="clk_toggle">
-                        <property name="label">Clock Auto Propagate</property>
-                        <property name="width-request">40</property>
-                        <property name="height-request">40</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="margin-start">900</property>
+                </property>
+
+                <!-- Container of the register values and the stack contents. -->
+                <property name="end-child">
+                    <object class="GtkBox" id="right_box">
+                        <property name="name">paneBackground</property>
+                        <property name="orientation">vertical</property>
+                        <property name="margin-start">5</property>
+                        <property name="margin-top">5</property>
+                        <property name="margin-end">5</property>
+                        <property name="margin-bottom">5</property>
+                        <property name="spacing">10</property>
+
+                        <!-- Register View Table -->
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label">Registers</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkGrid" id="register_grid">
+                                <property name="name">widgetBackground</property>
+                                <property name="column-homogeneous">True</property>
+
+                                <!-- Row 1 Labels -->
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">r0</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="r0_value">
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">ra</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="ra_value">
+                                        <layout>
+                                            <property name="column">3</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">r0</property>
+                                        <layout>
+                                            <property name="column">4</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="s0_value">
+                                        <layout>
+                                            <property name="column">5</property>
+                                            <property name="row">0</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <!-- Row 2 Labels -->
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">s1</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="s1_value">
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">s2</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="s2_value">
+                                        <layout>
+                                            <property name="column">3</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">s3</property>
+                                        <layout>
+                                            <property name="column">4</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="s3_value">
+                                        <layout>
+                                            <property name="column">5</property>
+                                            <property name="row">1</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <!-- Row 3 Labels -->
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">s4</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="s4_value">
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">s5</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="s5_value">
+                                        <layout>
+                                            <property name="column">3</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">s6</property>
+                                        <layout>
+                                            <property name="column">4</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="s6_value">
+                                        <layout>
+                                            <property name="column">5</property>
+                                            <property name="row">2</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <!-- Row 4 Labels -->
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">s7</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">3</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="s7_value">
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">3</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">t0</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">3</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="t0_value">
+                                        <layout>
+                                            <property name="column">3</property>
+                                            <property name="row">3</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">t1</property>
+                                        <layout>
+                                            <property name="column">4</property>
+                                            <property name="row">3</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="t1_value">
+                                        <layout>
+                                            <property name="column">5</property>
+                                            <property name="row">3</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <!-- Row 5 Labels -->
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">t2</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">4</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="t2_value">
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">4</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">t3</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">4</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="t3_value">
+                                        <layout>
+                                            <property name="column">3</property>
+                                            <property name="row">4</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">t4</property>
+                                        <layout>
+                                            <property name="column">4</property>
+                                            <property name="row">4</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="t4_value">
+                                        <layout>
+                                            <property name="column">5</property>
+                                            <property name="row">4</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <!-- Row 6 Labels -->
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">t5</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">7</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="t5_value">
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">7</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">t6</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">7</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="t6_value">
+                                        <layout>
+                                            <property name="column">3</property>
+                                            <property name="row">7</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">t7</property>
+                                        <layout>
+                                            <property name="column">4</property>
+                                            <property name="row">7</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="t7_value">
+                                        <layout>
+                                            <property name="column">5</property>
+                                            <property name="row">7</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <!-- Row 7 Labels -->
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">fa0</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">8</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="fa0_value">
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">8</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">fa1</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">8</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="fa1_value">
+                                        <layout>
+                                            <property name="column">3</property>
+                                            <property name="row">8</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">fa2</property>
+                                        <layout>
+                                            <property name="column">4</property>
+                                            <property name="row">8</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="fa2_value">
+                                        <layout>
+                                            <property name="column">5</property>
+                                            <property name="row">8</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <!-- Row 8 Labels -->
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">fa3</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">9</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="fa3_value">
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">9</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">fr</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">9</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="fr_value">
+                                        <layout>
+                                            <property name="column">3</property>
+                                            <property name="row">9</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">r23</property>
+                                        <layout>
+                                            <property name="column">4</property>
+                                            <property name="row">9</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="r23_value">
+                                        <layout>
+                                            <property name="column">5</property>
+                                            <property name="row">9</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <!-- Row 9 Labels -->
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">r24</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">10</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="r24_value">
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">10</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">r25</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">10</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="r25_value">
+                                        <layout>
+                                            <property name="column">3</property>
+                                            <property name="row">10</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">r26</property>
+                                        <layout>
+                                            <property name="column">4</property>
+                                            <property name="row">10</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="r26_value">
+                                        <layout>
+                                            <property name="column">5</property>
+                                            <property name="row">10</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <!-- Row 10 Labels -->
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">r27</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">11</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="r27_value">
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">11</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">r28</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">11</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="r28_value">
+                                        <layout>
+                                            <property name="column">3</property>
+                                            <property name="row">11</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">r29</property>
+                                        <layout>
+                                            <property name="column">4</property>
+                                            <property name="row">11</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="r29_value">
+                                        <layout>
+                                            <property name="column">5</property>
+                                            <property name="row">11</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <!-- Row 11 Labels -->
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">istat</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">12</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="istat_value">
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">12</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">sp</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">12</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="sp_value">
+                                        <layout>
+                                            <property name="column">3</property>
+                                            <property name="row">12</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">pc</property>
+                                        <layout>
+                                            <property name="column">4</property>
+                                            <property name="row">12</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="pc_value">
+                                        <layout>
+                                            <property name="column">5</property>
+                                            <property name="row">12</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                                <!-- Row 12 Labels -->
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">csr</property>
+                                        <layout>
+                                            <property name="column">0</property>
+                                            <property name="row">13</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="csr_value">
+                                        <layout>
+                                            <property name="column">1</property>
+                                            <property name="row">13</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">intsr</property>
+                                        <layout>
+                                            <property name="column">2</property>
+                                            <property name="row">13</property>
+                                        </layout>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="intsr_value">
+                                        <layout>
+                                            <property name="column">3</property>
+                                            <property name="row">13</property>
+                                        </layout>
+                                    </object>
+                                </child>
+
+                            </object>
+                        </child>
+
+
+                        <!-- Stack View Table (TODO) -->
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label">Stack View (TODO)</property>
+                            </object>
+                        </child>
                     </object>
-                </child>
-                <child>
-                    <object class="GtkButton" id="clk_step">
-                        <property name="label">Step Clock</property>
-                        <property name="width-request">40</property>
-                        <property name="height-request">40</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="margin-start">900</property>
-                        <property name="margin-top">60</property>
-                    </object>
-                </child>
+                </property>
             </object>
-        </child>
+        </property>
     </object>
 </interface>
